@@ -843,7 +843,7 @@
 
   // Helper API Call ke Google Apps Script
   async function loadDatabaseFromGAS() {
-    showLoader('Memuat Database Santri & Bank Soal dari Google Sheets...');
+    showLoader('Load Database & Question Bank...');
     try {
       const res = await fetch(GAS_API_URL);
       const json = await res.json();
