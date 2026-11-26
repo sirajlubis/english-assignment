@@ -272,6 +272,7 @@
     .btn-outline { background: #FFFFFF; color: var(--text-dark); border: 1px solid #D1D5DB; }
     .btn-outline:hover { background: #F3F4F6; }
     .btn-record { background: #FEF2F2; color: #DC2626; border: 1px solid #FECACA; }
+    .btn-record:hover { background: #FEE2E2; }
     .btn-record.recording { background: #DC2626; color: #FFFFFF; animation: pulse 1.4s infinite; }
 
     @keyframes pulse {
@@ -697,7 +698,10 @@
             <h1 class="page-heading">Rekap & Verifikasi Nilai Penguji</h1>
             <p class="page-desc">Periksa hasil koreksi otomatis (kelipatan 5). Edit skor jika diperlukan sebelum menyimpan permanen ke Google Sheets.</p>
           </div>
-          <button class="btn btn-outline" onclick="switchView('setup')">+ Mulai Batch Baru</button>
+          <div style="display:flex; gap:10px;">
+            <button class="btn btn-record" onclick="triggerResetData()">🗑️ Reset Data Testing</button>
+            <button class="btn btn-outline" onclick="switchView('setup')">+ Mulai Batch Baru</button>
+          </div>
         </div>
 
         <div class="section-card">
@@ -764,7 +768,7 @@
   <div style="background:#FFFFFF; padding:28px; border-radius:14px; width:100%; max-width:360px; box-shadow:0 20px 40px rgba(0,0,0,0.2);">
     <div style="font-family:'Newsreader',serif; font-size:22px; font-weight:600; margin-bottom:6px;">Akses Penguji</div>
     <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">Masukkan PIN penguji untuk membuka halaman rekap & verifikasi nilai rahasia.</p>
-    <input type="password" id="pin-input" placeholder="Masukkan PIN (Default: 2627)" style="margin-bottom:16px;" onkeydown="if(event.key==='Enter') submitPin()">
+    <input type="password" id="pin-input" placeholder="Masukkan PIN Penguji" style="margin-bottom:16px;" onkeydown="if(event.key==='Enter') submitPin()">
     <div style="display:flex; justify-content:flex-end; gap:10px;">
       <button class="btn btn-outline" onclick="closePinModal()">Batal</button>
       <button class="btn btn-primary" onclick="submitPin()">Buka Rekap</button>
@@ -775,7 +779,6 @@
 <script>
   // =========================================================================
   // KONFIGURASI BACKEND GOOGLE APPS SCRIPT
-  // Ganti URL di bawah dengan URL Web App (/exec) dari Google Apps Script Anda
   // =========================================================================
   const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbyHsEPTClMm9nNAQdpKZ_WLUlv8FfAV6gmrkcaHmGaLj9NojLsmo2NCLh_8zsn_jfIh0A/exec';
 
@@ -785,6 +788,7 @@
   let currentStudentIdx = 0;
   let evaluatedResults = [];
   let isExaminerUnlocked = false;
+  let activeExaminerPin = '';
 
   // Audio Recording, VU Meter & Speech Recognition State
   let mediaRecorder = null;
@@ -839,11 +843,6 @@
 
   // Helper API Call ke Google Apps Script
   async function loadDatabaseFromGAS() {
-    if (!GAS_API_URL || GAS_API_URL.includes('PASTE_URL')) {
-      hideLoader();
-      alert('Perhatian: Variabel GAS_API_URL di dalam index.html belum diisi dengan URL Web App Google Apps Script.');
-      return;
-    }
     showLoader('Memuat Database Santri & Bank Soal dari Google Sheets...');
     try {
       const res = await fetch(GAS_API_URL);
@@ -1066,8 +1065,10 @@
       isRecording = false;
       document.getElementById('sidebar-mic-status').innerText = 'Siap Merekam';
       document.querySelectorAll('.btn-record').forEach(b => {
-        b.classList.remove('recording');
-        b.innerHTML = '<span>🎙️ Mulai Rekam Ulang</span>';
+        if (b.id && b.id.startsWith('btn-rec')) {
+          b.classList.remove('recording');
+          b.innerHTML = '<span>🎙️ Mulai Rekam Ulang</span>';
+        }
       });
     }
   }
@@ -1390,7 +1391,9 @@
     openPinModal();
   }
 
-  // PIN & Rekap Penguji
+  // =========================================================================
+  // PIN, REKAP PENGUJI & RESET DATA TESTING
+  // =========================================================================
   function openPinModal() {
     if (isExaminerUnlocked) { renderRecapTable(); switchView('recap'); return; }
     document.getElementById('pin-input').value = '';
@@ -1407,6 +1410,7 @@
       hideLoader();
       if (res.valid) {
         isExaminerUnlocked = true;
+        activeExaminerPin = pin;
         closePinModal();
         renderRecapTable();
         switchView('recap');
@@ -1493,6 +1497,28 @@
     } catch (e) {
       hideLoader();
       alert('Gagal menyimpan ke Google Sheets: ' + e.message);
+    }
+  }
+
+  async function triggerResetData() {
+    const confirm1 = confirm('PERINGATAN: Semua nilai di tab Hasil_Ujian, status santri, dan file audio di Drive akan dihapus/direset. Lanjutkan?');
+    if (!confirm1) return;
+
+    showLoader('Mereset seluruh data testing di Sheets & Drive...');
+    try {
+      const res = await postToGAS({ action: 'resetData', pin: activeExaminerPin });
+      hideLoader();
+      if (res.status === 'ok') {
+        evaluatedResults = [];
+        document.getElementById('recap-tbody').innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--text-muted);">Belum ada batch yang baru selesai diuji.</td></tr>';
+        await loadDatabaseFromGAS();
+        alert('Seluruh data testing berhasil direset bersih!');
+      } else {
+        alert('Gagal reset: ' + res.message);
+      }
+    } catch (e) {
+      hideLoader();
+      alert('Terjadi kesalahan saat reset: ' + e.message);
     }
   }
 
