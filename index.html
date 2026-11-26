@@ -546,7 +546,7 @@
             <div class="card-num-box">01</div>
             <div>
               <div style="font-weight:700; font-size:15px;">Konfigurasi Peserta (1–6 Santri)</div>
-              <div style="font-size:12px; color:var(--text-muted);">Soal otomatis diacak berbeda untuk tiap santri sesuai kelasnya.</div>
+              <div style="font-size:12px; color:var(--text-muted);">Soal otomatis diacak berbeda untuk tiap santri sesuai jenjang & kelasnya.</div>
             </div>
           </div>
 
@@ -850,7 +850,6 @@
       };
       localStorage.setItem(BACKUP_STORAGE_KEY, JSON.stringify(payload));
     } catch (e) {
-      console.warn('Kapasitas localStorage penuh, menyimpan tanpa audio Base64:', e);
       try {
         const lightBatch = BATCH.map(b => ({ ...b, readingAudioBase64: '', convAudioBase64: '' }));
         localStorage.setItem(BACKUP_STORAGE_KEY, JSON.stringify({
@@ -1179,8 +1178,13 @@
   }
 
   // =========================================================================
-  // LOGIKA BATCH, NAVIGASI & EVALUASI
+  // LOGIKA BATCH, PENGACAKAN SOAL PER JENJANG/KELAS & NAVIGASI
   // =========================================================================
+  function getJenjangByKelas(kelasStr) {
+    const k = parseInt(kelasStr, 10);
+    return k >= 10 ? 'Aliyah' : 'Tsanawiyah';
+  }
+
   function renderStudentDropdowns() {
     const count = parseInt(document.getElementById('batch-count').value, 10);
     const filter = document.getElementById('filter-status').value;
@@ -1234,18 +1238,22 @@
       const sObj = DB.santri.find(x => x.Nama === name);
       const kelasStr = String(sObj.Kelas).trim();
       const isAliyah = sObj.Jenjang === 'Aliyah';
+      const targetJenjang = isAliyah ? 'Aliyah' : 'Tsanawiyah';
 
-      const rPool = DB.bankReading.filter(r => String(r.Kelas).trim() === kelasStr && !usedReadingIds.has(r.ID_Soal));
+      // Reading: Acak dari seluruh bank soal jenjang terkait (Tsanawiyah 7-9 / Aliyah 10-12)
+      const rPool = DB.bankReading.filter(r => getJenjangByKelas(r.Kelas) === targetJenjang && !usedReadingIds.has(r.ID_Soal));
       const rPick = rPool.length ? rPool[Math.floor(Math.random() * rPool.length)] : DB.bankReading[0];
       if (rPick) usedReadingIds.add(rPick.ID_Soal);
 
+      // Dictation: Acak spesifik per angka kelas (sesuai aturan jumlah kata per kelas)
       const dPool = DB.bankDictation.filter(d => String(d.Kelas).trim() === kelasStr && !usedDictationIds.has(d.ID_Soal));
       const dPick = dPool.length ? dPool[Math.floor(Math.random() * dPool.length)] : DB.bankDictation[0];
       if (dPick) usedDictationIds.add(dPick.ID_Soal);
 
+      // Conversation (Khusus Aliyah): Acak dari seluruh kartu diskusi Aliyah
       let cPick = null;
       if (isAliyah) {
-        const cPool = DB.bankConversation.filter(c => String(c.Kelas).trim() === kelasStr && !usedConvIds.has(c.ID_Soal));
+        const cPool = DB.bankConversation.filter(c => getJenjangByKelas(c.Kelas) === 'Aliyah' && !usedConvIds.has(c.ID_Soal));
         cPick = cPool.length ? cPool[Math.floor(Math.random() * cPool.length)] : DB.bankConversation[0];
         if (cPick) usedConvIds.add(cPick.ID_Soal);
       }
