@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>English Assessment Portal — Pesantren 26/27</title>
+  <title>English Assessment — PMD 26/27</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -48,12 +48,12 @@
       min-height: 88vh;
     }
 
-    /* Top Header & Stepper Navigation */
     .top-bar {
       display: flex;
       align-items: stretch;
       border-bottom: 1px solid var(--border);
       background: #FFFFFF;
+      flex-wrap: wrap;
     }
 
     .brand-box {
@@ -93,8 +93,8 @@
 
     .step-tab {
       flex: 1;
-      min-width: 185px;
-      padding: 16px 20px;
+      min-width: 175px;
+      padding: 16px 18px;
       display: flex;
       align-items: center;
       gap: 12px;
@@ -126,7 +126,7 @@
     .step-info-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
 
     .pin-nav-btn {
-      padding: 0 20px;
+      padding: 14px 20px;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -141,7 +141,6 @@
     }
     .pin-nav-btn:hover { background: var(--primary-light); color: var(--primary); }
 
-    /* Workspace Body */
     .workspace { display: flex; flex: 1; }
 
     .sidebar {
@@ -154,6 +153,12 @@
       flex-direction: column;
       justify-content: space-between;
       gap: 16px;
+    }
+
+    @media (max-width: 860px) {
+      .workspace { flex-direction: column; }
+      .sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
+      .brand-box { width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
     }
 
     .sidebar-label {
@@ -196,7 +201,6 @@
     .pill-badge.aliyah { background: #ECFDF5; color: var(--primary); border-color: #A7F3D0; }
     .pill-badge.mts { background: #EFF6FF; color: #1D4ED8; border-color: #BFDBFE; }
 
-    /* Main Content Panel */
     .main-content { flex: 1; padding: 30px 36px; overflow-y: auto; background: #FFFFFF; }
     .page-heading { font-family: 'Newsreader', serif; font-size: 28px; font-weight: 500; color: var(--text-dark); }
     .page-desc { font-size: 13px; color: var(--text-muted); margin-top: 4px; margin-bottom: 22px; }
@@ -224,7 +228,7 @@
       flex-shrink: 0;
     }
 
-    .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
     .form-group { display: flex; flex-direction: column; gap: 6px; }
 
     label {
@@ -251,7 +255,6 @@
       box-shadow: 0 0 0 3px rgba(4, 120, 87, 0.1);
     }
 
-    /* Buttons */
     .btn {
       display: inline-flex;
       align-items: center;
@@ -281,7 +284,6 @@
       100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
     }
 
-    /* Visual Audio VU Meter */
     .vu-meter-box {
       display: flex;
       align-items: center;
@@ -303,7 +305,6 @@
     .vu-bar.active-yellow { background: #F59E0B; }
     .vu-bar.active-red { background: #EF4444; }
 
-    /* Reading Passage Box */
     .reading-passage {
       background: #F8FAFC;
       border: 1px solid #E2E8F0;
@@ -329,6 +330,21 @@
       font-size: 12px;
       font-weight: 600;
       margin-bottom: 18px;
+    }
+
+    .recovery-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      background: #FFFBEB;
+      border: 1px solid #FDE68A;
+      color: #92400E;
+      padding: 14px 18px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      font-size: 13px;
     }
 
     .audio-control-bar {
@@ -433,7 +449,7 @@
     </div>
 
     <button class="pin-nav-btn" onclick="openPinModal()">
-      <span>Rekap Penguji</span>
+      <span>🔒 Rekap Penguji</span>
     </button>
   </div>
 
@@ -457,7 +473,6 @@
       </div>
 
       <div style="display:flex; flex-direction:column; gap:10px;">
-        <!-- Mini Mic Status Widget in Sidebar -->
         <div style="padding: 12px; background: #FFFFFF; border-radius: 8px; border: 1px solid #D1E7DF; font-size: 11px;">
           <div style="font-weight:700; color:var(--text-dark); margin-bottom:6px;">STATUS MICROPHONE</div>
           <div id="sidebar-mic-status" style="color:var(--text-muted); margin-bottom:6px;">Belum di-test</div>
@@ -475,12 +490,23 @@
     <!-- MAIN PANEL -->
     <div class="main-content">
 
+      <!-- BANNER PEMULIHAN LOCALSTORAGE -->
+      <div id="recovery-banner" class="recovery-banner hidden">
+        <div>
+          <strong>⚠️ Ditemukan Cadangan Sesi Belum Tersimpan!</strong><br>
+          <span id="recovery-detail">Terdapat data ujian atau draf rekap yang tersimpan otomatis di browser ini.</span>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn btn-primary" style="padding:8px 14px; font-size:12px;" onclick="restoreBackupState()">Pulihkan Data</button>
+          <button class="btn btn-outline" style="padding:8px 14px; font-size:12px;" onclick="clearBackupState()">Abaikan</button>
+        </div>
+      </div>
+
       <!-- VIEW 1: SETUP BATCH & AUDIO CHECK -->
       <div id="view-setup">
         <h1 class="page-heading">Step 00 — Setup Batch & Testing Microphone</h1>
         <p class="page-desc">Pastikan mic terbaca dengan baik sebelum memilih 1–6 santri untuk kloter ujian.</p>
 
-        <!-- PANEL TEST MIC & VISUAL AUDIO METER -->
         <div class="section-card" style="background:#FAFFFD; border-color:#B7DFD1;">
           <div class="card-header-row" style="justify-content:space-between; flex-wrap:wrap;">
             <div style="display:flex; align-items:center; gap:14px;">
@@ -515,7 +541,6 @@
           </div>
         </div>
 
-        <!-- PANEL KONFIGURASI PESERTA BATCH -->
         <div class="section-card">
           <div class="card-header-row">
             <div class="card-num-box">01</div>
@@ -540,8 +565,8 @@
             <div class="form-group">
               <label>FILTER TAMPILAN DAFTAR SANTRI</label>
               <select id="filter-status" onchange="renderStudentDropdowns()">
+                <option value="belum" selected>Hanya yang Belum Ujian</option>
                 <option value="all">Tampilkan Semua Santri (38)</option>
-                <option value="belum">Hanya yang Belum Ujian</option>
               </select>
             </div>
           </div>
@@ -646,7 +671,7 @@
             </div>
           </div>
 
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:16px;">
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:14px; margin-bottom:16px;">
             <div style="padding:14px; border:1px solid #D1E7DF; border-radius:8px; background:#F8FAFC;">
               <div style="font-size:11px; font-weight:700; color:var(--primary); margin-bottom:6px;">PERTANYAAN 1</div>
               <div id="s3-q1-text" style="font-size:14px; font-weight:500; margin-bottom:10px;">-</div>
@@ -698,14 +723,14 @@
             <h1 class="page-heading">Rekap & Verifikasi Nilai Penguji</h1>
             <p class="page-desc">Periksa hasil koreksi otomatis (kelipatan 5). Edit skor jika diperlukan sebelum menyimpan permanen ke Google Sheets.</p>
           </div>
-          <div style="display:flex; gap:10px;">
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
             <button class="btn btn-record" onclick="triggerResetData()">🗑️ Reset Data Testing</button>
             <button class="btn btn-outline" onclick="switchView('setup')">+ Mulai Batch Baru</button>
           </div>
         </div>
 
         <div class="section-card">
-          <div class="card-header-row" style="justify-content:space-between;">
+          <div class="card-header-row" style="justify-content:space-between; flex-wrap:wrap;">
             <div style="display:flex; align-items:center; gap:12px;">
               <div class="card-num-box">✓</div>
               <div>
@@ -777,10 +802,8 @@
 </div>
 
 <script>
-  // =========================================================================
-  // KONFIGURASI BACKEND GOOGLE APPS SCRIPT
-  // =========================================================================
   const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbyHsEPTClMm9nNAQdpKZ_WLUlv8FfAV6gmrkcaHmGaLj9NojLsmo2NCLh_8zsn_jfIh0A/exec';
+  const BACKUP_STORAGE_KEY = 'ea_pmd_2627_backup_v1';
 
   let DB = { santri: [], bankReading: [], bankDictation: [], bankConversation: [], hasilUjian: [] };
   let BATCH = [];
@@ -790,7 +813,6 @@
   let isExaminerUnlocked = false;
   let activeExaminerPin = '';
 
-  // Audio Recording, VU Meter & Speech Recognition State
   let mediaRecorder = null;
   let audioChunks = [];
   let isRecording = false;
@@ -811,8 +833,89 @@
 
     initSpeechRecognition();
     await loadDatabaseFromGAS();
+    checkBackupState();
   };
 
+  // =========================================================================
+  // AUTO-BACKUP & PEMULIHAN LOCALSTORAGE
+  // =========================================================================
+  function saveBackupState() {
+    try {
+      const payload = {
+        timestamp: new Date().toLocaleTimeString('id-ID'),
+        batch: BATCH,
+        currentSession: currentSession,
+        currentStudentIdx: currentStudentIdx,
+        evaluatedResults: evaluatedResults
+      };
+      localStorage.setItem(BACKUP_STORAGE_KEY, JSON.stringify(payload));
+    } catch (e) {
+      console.warn('Kapasitas localStorage penuh, menyimpan tanpa audio Base64:', e);
+      try {
+        const lightBatch = BATCH.map(b => ({ ...b, readingAudioBase64: '', convAudioBase64: '' }));
+        localStorage.setItem(BACKUP_STORAGE_KEY, JSON.stringify({
+          timestamp: new Date().toLocaleTimeString('id-ID'),
+          batch: lightBatch,
+          currentSession: currentSession,
+          currentStudentIdx: currentStudentIdx,
+          evaluatedResults: evaluatedResults
+        }));
+      } catch (e2) {}
+    }
+  }
+
+  function checkBackupState() {
+    try {
+      const raw = localStorage.getItem(BACKUP_STORAGE_KEY);
+      if (!raw) return;
+      const saved = JSON.parse(raw);
+      const hasDraft = saved.evaluatedResults && saved.evaluatedResults.length > 0;
+      const hasActiveBatch = saved.batch && saved.batch.length > 0;
+      if (hasDraft || hasActiveBatch) {
+        const count = hasDraft ? saved.evaluatedResults.length : saved.batch.length;
+        const statusDesc = hasDraft ? 'hasil draf rekap belum difinalisasi' : 'sesi ujian berjalan';
+        document.getElementById('recovery-detail').innerText =
+          `Tercatat pukul ${saved.timestamp} (${count} santri — ${statusDesc}).`;
+        document.getElementById('recovery-banner').classList.remove('hidden');
+      }
+    } catch (e) {}
+  }
+
+  function restoreBackupState() {
+    try {
+      const raw = localStorage.getItem(BACKUP_STORAGE_KEY);
+      if (!raw) return;
+      const saved = JSON.parse(raw);
+      BATCH = saved.batch || [];
+      currentSession = saved.currentSession || 1;
+      currentStudentIdx = saved.currentStudentIdx || 0;
+      evaluatedResults = saved.evaluatedResults || [];
+      document.getElementById('recovery-banner').classList.add('hidden');
+      renderStudentDropdowns();
+
+      if (evaluatedResults.length > 0) {
+        openPinModal();
+      } else if (BATCH.length > 0) {
+        const hasAliyah = BATCH.some(b => b.jenjang === 'Aliyah');
+        document.getElementById('tab-s1').classList.remove('disabled');
+        document.getElementById('tab-s2').classList.remove('disabled');
+        if (hasAliyah) document.getElementById('tab-s3').classList.remove('disabled');
+        switchView('exam');
+        renderExamScreen();
+      }
+    } catch (e) {
+      alert('Gagal memulihkan cadangan: ' + e.message);
+    }
+  }
+
+  function clearBackupState() {
+    localStorage.removeItem(BACKUP_STORAGE_KEY);
+    document.getElementById('recovery-banner').classList.add('hidden');
+  }
+
+  // =========================================================================
+  // VU METER & DATABASE LOADER
+  // =========================================================================
   function buildVuBars(containerId, count) {
     const el = document.getElementById(containerId);
     if (!el) return;
@@ -841,7 +944,6 @@
     });
   }
 
-  // Helper API Call ke Google Apps Script
   async function loadDatabaseFromGAS() {
     showLoader('Load Database & Question Bank...');
     try {
@@ -894,9 +996,7 @@
         select.appendChild(opt);
       });
       if (currentVal) select.value = currentVal;
-    } catch (e) {
-      console.warn('Tidak dapat membaca daftar perangkat audio:', e);
-    }
+    } catch (e) {}
   }
 
   function startAudioVisualizer(stream) {
@@ -983,7 +1083,7 @@
   }
 
   // =========================================================================
-  // SPEECH RECOGNITION & RECORDING UJIAN
+  // SPEECH RECOGNITION & RECORDING UJIAN (KOMPRESI 32KBPS)
   // =========================================================================
   function initSpeechRecognition() {
     const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -1023,7 +1123,11 @@
         const stream = await navigator.mediaDevices.getUserMedia(constraints);
         startAudioVisualizer(stream);
 
-        mediaRecorder = new MediaRecorder(stream);
+        let recorderOptions = { audioBitsPerSecond: 32000 };
+        if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
+          recorderOptions.mimeType = 'audio/webm;codecs=opus';
+        }
+        mediaRecorder = new MediaRecorder(stream, recorderOptions);
         audioChunks = [];
         liveTranscriptBuffer = '';
 
@@ -1038,6 +1142,7 @@
             } else if (sessionKey === 's3') {
               BATCH[currentStudentIdx].convAudioBase64 = reader.result;
             }
+            saveBackupState();
           };
           reader.readAsDataURL(blob);
           stream.getTracks().forEach(t => t.stop());
@@ -1082,8 +1187,12 @@
     const container = document.getElementById('student-selectors-grid');
     container.innerHTML = '';
 
+    const pendingDraftNames = new Set(evaluatedResults.map(r => String(r.nama).trim()));
+
     const filteredSantri = DB.santri.filter(s => {
-      if (filter === 'belum') return String(s.Status_Ujian).toLowerCase() !== 'sudah';
+      const isAlreadyDone = String(s.Status_Ujian).toLowerCase() === 'sudah';
+      const isInPendingDraft = pendingDraftNames.has(String(s.Nama).trim());
+      if (filter === 'belum') return !isAlreadyDone && !isInPendingDraft;
       return true;
     });
 
@@ -1092,7 +1201,9 @@
       div.className = 'form-group';
       let optionsHtml = `<option value="">-- Pilih Santri #${i + 1} --</option>`;
       filteredSantri.forEach(s => {
-        const badge = s.Status_Ujian === 'Sudah' ? ' [Sudah]' : '';
+        let badge = '';
+        if (String(s.Status_Ujian).toLowerCase() === 'sudah') badge = ' [Sudah]';
+        else if (pendingDraftNames.has(String(s.Nama).trim())) badge = ' [Draf Rekap]';
         optionsHtml += `<option value="${s.Nama}">${s.Nama} — Kelas ${s.Kelas} (${s.Jenjang})${badge}</option>`;
       });
 
@@ -1164,6 +1275,7 @@
 
     currentSession = 1;
     currentStudentIdx = 0;
+    saveBackupState();
     switchView('exam');
     renderExamScreen();
   }
@@ -1175,6 +1287,7 @@
     document.querySelectorAll('.step-tab').forEach(el => el.classList.remove('active'));
 
     if (viewName === 'setup') {
+      renderStudentDropdowns();
       document.getElementById('view-setup').classList.remove('hidden');
       document.getElementById('tab-setup').classList.add('active');
       document.getElementById('sidebar-heading').innerText = 'NAVIGASI UJIAN';
@@ -1208,6 +1321,7 @@
     } else {
       currentStudentIdx = 0;
     }
+    saveBackupState();
     switchView('exam');
     renderExamScreen();
   }
@@ -1256,7 +1370,7 @@
       document.getElementById('s1-passage-meta').innerText = `Judul Teks: "${s.readingSoal.Judul}" (${s.readingSoal.ID_Soal})`;
       document.getElementById('s1-passage-text').innerText = s.readingSoal.Teks_Bacaan;
       document.getElementById('s1-transcript-preview').innerText = s.readingTranscript || 'Tekan tombol rekam saat santri mulai membaca...';
-      document.getElementById('s1-rec-status').innerText = s.readingAudioBase64 ? 'Audio Tersimpan ✓' : 'Siap Merekam';
+      document.getElementById('s1-rec-status').innerText = s.readingAudioBase64 ? 'Audio Tersimpan ✓' : 'Ready to Record';
 
     } else if (currentSession === 2) {
       document.getElementById('exam-session-title').innerText = 'Session 02 — Listening & Writing (Dictation)';
@@ -1286,8 +1400,14 @@
     }
   }
 
-  function saveCurrentDictationDraft() { BATCH[currentStudentIdx].dictationAnswer = document.getElementById('s2-answer-input').value; }
-  function saveCurrentConvDraft() { BATCH[currentStudentIdx].convManualBoost = parseInt(document.getElementById('s3-manual-score').value, 10); }
+  function saveCurrentDictationDraft() {
+    BATCH[currentStudentIdx].dictationAnswer = document.getElementById('s2-answer-input').value;
+    saveBackupState();
+  }
+  function saveCurrentConvDraft() {
+    BATCH[currentStudentIdx].convManualBoost = parseInt(document.getElementById('s3-manual-score').value, 10);
+    saveBackupState();
+  }
 
   function speakText(text, rate) {
     if (!('speechSynthesis' in window)) { alert('Browser tidak mendukung Text-to-Speech.'); return; }
@@ -1302,6 +1422,7 @@
     const s = BATCH[currentStudentIdx];
     if (s.dictationPlayCount >= 2) return;
     s.dictationPlayCount++;
+    saveBackupState();
     speakText(s.dictationSoal.Kalimat_Asli, s.jenjang === 'Tsanawiyah' ? 0.85 : 1.0);
     const sisa = Math.max(0, 2 - s.dictationPlayCount);
     const btn = document.getElementById('btn-play-tts');
@@ -1328,6 +1449,7 @@
     stopRecordingIfActive();
     if (sessNum === 2) saveCurrentDictationDraft();
     if (sessNum === 3) saveCurrentConvDraft();
+    saveBackupState();
 
     if (sessNum === 1 || sessNum === 2) {
       if (currentStudentIdx + 1 < BATCH.length) {
@@ -1350,7 +1472,7 @@
 
   async function processAllBatchEvaluations() {
     showLoader('Mengunggah Rekaman Audio & Mengoreksi Jawaban Otomatis...');
-    evaluatedResults = [];
+    const batchResults = [];
 
     for (let i = 0; i < BATCH.length; i++) {
       const b = BATCH[i];
@@ -1375,16 +1497,21 @@
 
       try {
         const res = await postToGAS({ action: 'evaluateStudent', payload: payload });
-        if (res.status === 'ok') evaluatedResults.push(res.result);
+        if (res.status === 'ok') batchResults.push(res.result);
         else throw new Error(res.message);
       } catch (e) {
-        evaluatedResults.push({
+        batchResults.push({
           nama: b.nama, kelas: b.kelas, jenjang: b.jenjang,
           skor_reading: 0, skor_dictation: 0, skor_conversation: 0, nilai_akhir: 0,
           link_audio: '-', catatan_ai: 'Gagal memproses otomatis, silakan input manual.'
         });
       }
     }
+
+    evaluatedResults = evaluatedResults.concat(batchResults);
+    BATCH = [];
+    saveBackupState();
+    renderStudentDropdowns();
 
     hideLoader();
     alert('Seluruh sesi batch selesai! Nilai tersimpan secara rahasia di Panel Rekap Penguji.');
@@ -1478,6 +1605,7 @@
 
     r.nilai_akhir = snapTo5(r.skor_reading + r.skor_dictation + (isAliyah ? r.skor_conversation : 0), 100);
     document.getElementById(`total-cell-${idx}`).innerText = r.nilai_akhir;
+    saveBackupState();
   }
 
   async function finalizeToSheet() {
@@ -1489,6 +1617,7 @@
       if (res.status === 'ok') {
         alert(`Berhasil menyimpan ${res.result.count} data nilai ke tab Hasil_Ujian!`);
         evaluatedResults = [];
+        clearBackupState();
         document.getElementById('recap-tbody').innerHTML = '<tr><td colspan="7" style="text-align:center; color:#047857;">Data sudah difinalisasi ke Google Sheets ✓</td></tr>';
         await loadDatabaseFromGAS();
       } else {
@@ -1510,6 +1639,8 @@
       hideLoader();
       if (res.status === 'ok') {
         evaluatedResults = [];
+        BATCH = [];
+        clearBackupState();
         document.getElementById('recap-tbody').innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--text-muted);">Belum ada batch yang baru selesai diuji.</td></tr>';
         await loadDatabaseFromGAS();
         alert('Seluruh data testing berhasil direset bersih!');
