@@ -1,0 +1,1519 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>English Assessment Portal — Pesantren 26/27</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-outer: #EBF7F3;
+      --bg-card: #FFFFFF;
+      --bg-sidebar: #F4F9F7;
+      --primary: #047857;
+      --primary-hover: #065F46;
+      --primary-light: #D1FAE5;
+      --text-dark: #111827;
+      --text-muted: #6B7280;
+      --border: #E5E7EB;
+      --danger: #DC2626;
+      --radius-lg: 14px;
+      --radius-md: 10px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg-outer);
+      color: var(--text-dark);
+      min-height: 100vh;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .app-shell {
+      width: 100%;
+      max-width: 1240px;
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 10px 30px rgba(4, 120, 87, 0.07);
+      border: 1px solid #D1E7DF;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 88vh;
+    }
+
+    /* Top Header & Stepper Navigation */
+    .top-bar {
+      display: flex;
+      align-items: stretch;
+      border-bottom: 1px solid var(--border);
+      background: #FFFFFF;
+    }
+
+    .brand-box {
+      width: 265px;
+      min-width: 265px;
+      padding: 18px 22px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-right: 1px solid var(--border);
+    }
+
+    .brand-badge {
+      width: 38px;
+      height: 38px;
+      background: var(--primary);
+      color: #FFFFFF;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .brand-title {
+      font-family: 'Newsreader', serif;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-dark);
+      line-height: 1.15;
+    }
+
+    .brand-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+    .stepper-wrap { flex: 1; display: flex; align-items: stretch; overflow-x: auto; }
+
+    .step-tab {
+      flex: 1;
+      min-width: 185px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-right: 1px solid var(--border);
+      border-bottom: 3px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: #FFFFFF;
+    }
+    .step-tab:last-child { border-right: none; }
+    .step-tab.active { border-bottom-color: var(--primary); background: #FAFFFD; }
+    .step-tab.disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .step-circle {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #E5E7EB;
+      color: #6B7280;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .step-tab.active .step-circle { background: var(--primary); color: #FFFFFF; }
+    .step-info-title { font-size: 13px; font-weight: 700; color: var(--text-dark); }
+    .step-info-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+    .pin-nav-btn {
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #F9FAFB;
+      border: none;
+      border-left: 1px solid var(--border);
+      color: var(--text-dark);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .pin-nav-btn:hover { background: var(--primary-light); color: var(--primary); }
+
+    /* Workspace Body */
+    .workspace { display: flex; flex: 1; }
+
+    .sidebar {
+      width: 265px;
+      min-width: 265px;
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border);
+      padding: 20px 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .sidebar-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      padding: 0 10px 10px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 11px 12px;
+      border-radius: 8px;
+      margin-bottom: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+      border: 1px solid transparent;
+    }
+    .nav-item:hover { background: #E6F2EE; }
+    .nav-item.active { background: #E2EFEA; border-color: #B7DFD1; }
+    .nav-item-left { display: flex; align-items: center; gap: 10px; overflow: hidden; }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #CBD5E1; flex-shrink: 0; }
+    .nav-item.active .status-dot { background: var(--primary); }
+    .nav-name { font-size: 13px; font-weight: 600; color: var(--text-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .nav-meta { font-size: 11px; color: var(--text-muted); }
+
+    .pill-badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 99px;
+      background: #FFFFFF;
+      border: 1px solid #D1D5DB;
+      color: var(--text-muted);
+    }
+    .pill-badge.aliyah { background: #ECFDF5; color: var(--primary); border-color: #A7F3D0; }
+    .pill-badge.mts { background: #EFF6FF; color: #1D4ED8; border-color: #BFDBFE; }
+
+    /* Main Content Panel */
+    .main-content { flex: 1; padding: 30px 36px; overflow-y: auto; background: #FFFFFF; }
+    .page-heading { font-family: 'Newsreader', serif; font-size: 28px; font-weight: 500; color: var(--text-dark); }
+    .page-desc { font-size: 13px; color: var(--text-muted); margin-top: 4px; margin-bottom: 22px; }
+
+    .section-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 22px 24px;
+      background: #FFFFFF;
+      margin-bottom: 20px;
+    }
+
+    .card-header-row { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+    .card-num-box {
+      width: 34px;
+      height: 34px;
+      background: var(--primary);
+      color: #FFFFFF;
+      font-weight: 700;
+      font-size: 13px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+
+    label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #4B5563;
+    }
+
+    select, input[type="text"], input[type="password"], input[type="number"], textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #D1D5DB;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 14px;
+      color: var(--text-dark);
+      background: #FFFFFF;
+    }
+    select:focus, input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(4, 120, 87, 0.1);
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 11px 20px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+    .btn-primary { background: var(--primary); color: #FFFFFF; }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-primary:disabled { background: #9CA3AF; cursor: not-allowed; }
+    .btn-outline { background: #FFFFFF; color: var(--text-dark); border: 1px solid #D1D5DB; }
+    .btn-outline:hover { background: #F3F4F6; }
+    .btn-record { background: #FEF2F2; color: #DC2626; border: 1px solid #FECACA; }
+    .btn-record.recording { background: #DC2626; color: #FFFFFF; animation: pulse 1.4s infinite; }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+      70% { box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+    }
+
+    /* Visual Audio VU Meter */
+    .vu-meter-box {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      height: 28px;
+      padding: 4px 10px;
+      background: #111827;
+      border-radius: 6px;
+      min-width: 145px;
+    }
+    .vu-bar {
+      flex: 1;
+      height: 100%;
+      background: #374151;
+      border-radius: 2px;
+      transition: background 0.06s ease;
+    }
+    .vu-bar.active-green { background: #10B981; }
+    .vu-bar.active-yellow { background: #F59E0B; }
+    .vu-bar.active-red { background: #EF4444; }
+
+    /* Reading Passage Box */
+    .reading-passage {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-left: 4px solid var(--primary);
+      padding: 22px;
+      border-radius: 8px;
+      font-family: 'Newsreader', serif;
+      font-size: 21px;
+      line-height: 1.65;
+      color: #0F172A;
+      margin-bottom: 18px;
+    }
+
+    .blind-banner {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #F0FDF4;
+      border: 1px solid #BBF7D0;
+      color: #166534;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 18px;
+    }
+
+    .audio-control-bar {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      padding: 16px;
+      background: #F4F9F7;
+      border: 1px solid #CBE5DC;
+      border-radius: 10px;
+      margin-bottom: 18px;
+    }
+
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th {
+      background: #F4F9F7;
+      color: #374151;
+      font-weight: 700;
+      text-align: left;
+      padding: 12px;
+      border-bottom: 2px solid #D1E7DF;
+    }
+    td { padding: 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .score-input { width: 72px !important; padding: 6px 8px !important; font-weight: 700; text-align: center; }
+
+    .hidden { display: none !important; }
+
+    .loader-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(3px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+    }
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #D1FAE5;
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 12px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+<div id="loader" class="loader-overlay">
+  <div class="spinner"></div>
+  <div id="loader-text" style="font-weight:600; color:#047857;">Menghubungkan ke Database Google Sheets...</div>
+</div>
+
+<div class="app-shell">
+  <!-- TOP STEPPER BAR -->
+  <div class="top-bar">
+    <div class="brand-box">
+      <div class="brand-badge">EN</div>
+      <div>
+        <div class="brand-title">English Exam</div>
+        <div class="brand-sub">Pesantren Assessment 26/27</div>
+      </div>
+    </div>
+
+    <div class="stepper-wrap">
+      <div id="tab-setup" class="step-tab active" onclick="switchView('setup')">
+        <div class="step-circle">00</div>
+        <div>
+          <div class="step-info-title">Setup & Cek Mic</div>
+          <div class="step-info-sub">Pilih 1–6 Santri</div>
+        </div>
+      </div>
+
+      <div id="tab-s1" class="step-tab disabled" onclick="switchSession(1)">
+        <div class="step-circle">01</div>
+        <div>
+          <div class="step-info-title">Reading & Speaking</div>
+          <div class="step-info-sub">Fabel / Cerpen + Mic</div>
+        </div>
+      </div>
+
+      <div id="tab-s2" class="step-tab disabled" onclick="switchSession(2)">
+        <div class="step-circle">02</div>
+        <div>
+          <div class="step-info-title">Listening & Writing</div>
+          <div class="step-info-sub">Dikte Audio (Maks 2x)</div>
+        </div>
+      </div>
+
+      <div id="tab-s3" class="step-tab disabled" onclick="switchSession(3)">
+        <div class="step-circle">03</div>
+        <div>
+          <div class="step-info-title">Conversation</div>
+          <div class="step-info-sub">Khusus Jenjang Aliyah</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="pin-nav-btn" onclick="openPinModal()">
+      <span>🔒 Rekap Penguji</span>
+    </button>
+  </div>
+
+  <!-- WORKSPACE -->
+  <div class="workspace">
+    <!-- LEFT SIDEBAR -->
+    <div class="sidebar">
+      <div>
+        <div id="sidebar-heading" class="sidebar-label">NAVIGASI UJIAN</div>
+        <div id="sidebar-list">
+          <div class="nav-item active">
+            <div class="nav-item-left">
+              <div class="status-dot"></div>
+              <div>
+                <div class="nav-name">Setup & Audio Check</div>
+                <div class="nav-meta">Maksimal 6 santri</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <!-- Mini Mic Status Widget in Sidebar -->
+        <div style="padding: 12px; background: #FFFFFF; border-radius: 8px; border: 1px solid #D1E7DF; font-size: 11px;">
+          <div style="font-weight:700; color:var(--text-dark); margin-bottom:6px;">STATUS MIKROFON</div>
+          <div id="sidebar-mic-status" style="color:var(--text-muted); margin-bottom:6px;">Belum diuji</div>
+          <div id="sidebar-vu" class="vu-meter-box" style="height:18px; min-width:100%;"></div>
+        </div>
+
+        <div style="padding: 12px; background: #FFFFFF; border-radius: 8px; border: 1px solid #D1E7DF; font-size: 11px; color: #4B5563;">
+          <strong>Bobot Nilai (Kelipatan 5):</strong><br>
+          • MTs: R&S (50) + L&W (50)<br>
+          • MA: R&S (30) + L&W (30) + Conv (40)
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN PANEL -->
+    <div class="main-content">
+
+      <!-- VIEW 1: SETUP BATCH & AUDIO CHECK -->
+      <div id="view-setup">
+        <h1 class="page-heading">Step 00 — Setup Batch & Uji Mikrofon</h1>
+        <p class="page-desc">Pastikan mikrofon kondensor terbaca dengan baik sebelum memilih 1–6 santri untuk kloter ujian.</p>
+
+        <!-- PANEL TEST MIC & VISUAL AUDIO METER -->
+        <div class="section-card" style="background:#FAFFFD; border-color:#B7DFD1;">
+          <div class="card-header-row" style="justify-content:space-between; flex-wrap:wrap;">
+            <div style="display:flex; align-items:center; gap:14px;">
+              <div class="card-num-box">🎙️</div>
+              <div>
+                <div style="font-weight:700; font-size:15px;">Hardware Check: Mikrofon Kondensor & Audio Meter</div>
+                <div style="font-size:12px; color:var(--text-muted);">Pilih perangkat mikrofon dan ucapkan "Testing 1, 2, 3" untuk melihat indikator level suara.</div>
+              </div>
+            </div>
+            <span id="mic-test-badge" class="pill-badge">Standby</span>
+          </div>
+
+          <div style="display:flex; align-items:flex-end; gap:14px; flex-wrap:wrap;">
+            <div class="form-group" style="flex:1; min-width:240px;">
+              <label>PILIH PERANGKAT INPUT MIKROFON</label>
+              <select id="mic-device-select" onchange="restartMicTestIfActive()">
+                <option value="">Default Microphone (Klik Test Mic untuk memuat daftar)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>INDIKATOR SINYAL SUARA (REAL-TIME)</label>
+              <div id="setup-vu-meter" class="vu-meter-box" style="height:40px; min-width:210px;"></div>
+            </div>
+
+            <button id="btn-test-mic" class="btn btn-primary" onclick="toggleMicTest()">
+              <span>🎤 Test Mic Sekarang</span>
+            </button>
+          </div>
+          <div id="mic-test-feedback" style="font-size:12px; color:var(--text-muted); margin-top:10px;">
+            Klik tombol <strong>Test Mic Sekarang</strong> untuk mengaktifkan izin browser dan mengecek sensitivitas mikrofon.
+          </div>
+        </div>
+
+        <!-- PANEL KONFIGURASI PESERTA BATCH -->
+        <div class="section-card">
+          <div class="card-header-row">
+            <div class="card-num-box">01</div>
+            <div>
+              <div style="font-weight:700; font-size:15px;">Konfigurasi Peserta Kloter (1–6 Santri)</div>
+              <div style="font-size:12px; color:var(--text-muted);">Soal otomatis diacak berbeda untuk tiap santri sesuai kelasnya.</div>
+            </div>
+          </div>
+
+          <div class="form-grid" style="margin-bottom: 20px;">
+            <div class="form-group">
+              <label>JUMLAH SANTRI DALAM 1X PANGGIL (MAKS. 6)</label>
+              <select id="batch-count" onchange="renderStudentDropdowns()">
+                <option value="1">1 Santri</option>
+                <option value="2">2 Santri</option>
+                <option value="3" selected>3 Santri</option>
+                <option value="4">4 Santri</option>
+                <option value="5">5 Santri</option>
+                <option value="6">6 Santri</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>FILTER TAMPILAN DAFTAR SANTRI</label>
+              <select id="filter-status" onchange="renderStudentDropdowns()">
+                <option value="all">Tampilkan Semua Santri (38)</option>
+                <option value="belum">Hanya yang Belum Ujian</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="student-selectors-grid" class="form-grid"></div>
+
+          <div style="margin-top: 26px; display: flex; align-items: center; gap: 16px;">
+            <button class="btn btn-primary" onclick="startBatchExam()">
+              <span>Begin Assessment &rarr;</span>
+            </button>
+            <span style="font-size: 12px; color: var(--text-muted);">Pastikan indikator VU Meter di atas bergerak saat berbicara.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 2: ARENA UJIAN (BLIND MODE) -->
+      <div id="view-exam" class="hidden">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px;">
+          <div>
+            <h1 id="exam-session-title" class="page-heading">Session 01 — Reading & Speaking</h1>
+            <p id="exam-session-desc" class="page-desc">Santri membaca teks di bawah ini ke mikrofon kondensor dengan jelas.</p>
+          </div>
+          <div class="blind-banner">
+            <span>🛡️ Blind Mode Aktif — Nilai Disembunyikan dari Layar</span>
+          </div>
+        </div>
+
+        <!-- SESSION 1: READING & SPEAKING -->
+        <div id="panel-s1" class="section-card">
+          <div class="card-header-row" style="justify-content:space-between;">
+            <div style="display:flex; align-items:center; gap:12px;">
+              <div class="card-num-box" id="s1-badge">01</div>
+              <div>
+                <div id="s1-student-name" style="font-weight:700; font-size:16px;">Nama Santri</div>
+                <div id="s1-passage-meta" style="font-size:12px; color:var(--text-muted);">Kelas 7 • Judul Cerita</div>
+              </div>
+            </div>
+            <span id="s1-rec-status" style="font-size:12px; font-weight:600; color:#6B7280;">Siap Merekam</span>
+          </div>
+
+          <div id="s1-passage-text" class="reading-passage">Memuat teks bacaan...</div>
+
+          <div class="audio-control-bar">
+            <button id="btn-rec-s1" class="btn btn-record" onclick="toggleRecording('s1')">
+              <span>🎙️ Mulai Rekam Suara</span>
+            </button>
+            <div id="s1-live-vu" class="vu-meter-box"></div>
+            <div style="font-size:12px; color:#374151; flex:1; min-width:200px;">
+              <strong>Transkrip Suara Real-Time:</strong>
+              <div id="s1-transcript-preview" style="color:var(--text-muted); margin-top:2px; font-style:italic;">
+                Tekan tombol rekam saat santri mulai membaca...
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; margin-top:20px;">
+            <button class="btn btn-outline" onclick="prevStudentInSession()">&larr; Santri Sebelumnya</button>
+            <button class="btn btn-primary" onclick="nextStudentOrSession(1)">Simpan & Lanjut &rarr;</button>
+          </div>
+        </div>
+
+        <!-- SESSION 2: LISTENING & WRITING (DICTATION) -->
+        <div id="panel-s2" class="section-card hidden">
+          <div class="card-header-row">
+            <div class="card-num-box" id="s2-badge">02</div>
+            <div>
+              <div id="s2-student-name" style="font-weight:700; font-size:16px;">Nama Santri</div>
+              <div id="s2-meta" style="font-size:12px; color:var(--text-muted);">Sesi Dikte — Audio maksimal diputar 2 kali</div>
+            </div>
+          </div>
+
+          <div class="audio-control-bar">
+            <button id="btn-play-tts" class="btn btn-primary" onclick="playDictationAudio()">
+              <span>🔊 Putar Audio Kalimat (Sisa: 2x)</span>
+            </button>
+            <div style="font-size:12px; color:#374151;">
+              Kecepatan suara otomatis menyesuaikan jenjang (<strong>Tsanawiyah 0.85x</strong> | <strong>Aliyah 1.0x</strong>).<br>
+              Teks soal disembunyikan agar santri fokus menyimak.
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>KETIK KALIMAT YANG DIDENGAR (AUTOCORRECT & SPELLCHECK DINONAKTIFKAN)</label>
+            <textarea id="s2-answer-input" rows="3" placeholder="Santri mengetik kalimat bahasa Inggris di sini..."
+              autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+              oninput="saveCurrentDictationDraft()"></textarea>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; margin-top:20px;">
+            <button class="btn btn-outline" onclick="prevStudentInSession()">&larr; Santri Sebelumnya</button>
+            <button class="btn btn-primary" onclick="nextStudentOrSession(2)">Simpan & Lanjut &rarr;</button>
+          </div>
+        </div>
+
+        <!-- SESSION 3: CONVERSATION (KHUSUS ALIYAH) -->
+        <div id="panel-s3" class="section-card hidden">
+          <div class="card-header-row">
+            <div class="card-num-box" id="s3-badge">03</div>
+            <div>
+              <div id="s3-student-name" style="font-weight:700; font-size:16px;">Nama Santri (Aliyah)</div>
+              <div id="s3-tema" style="font-size:12px; color:var(--primary); font-weight:700;">Tema: -</div>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:16px;">
+            <div style="padding:14px; border:1px solid #D1E7DF; border-radius:8px; background:#F8FAFC;">
+              <div style="font-size:11px; font-weight:700; color:var(--primary); margin-bottom:6px;">PERTANYAAN AUDIO 1</div>
+              <div id="s3-q1-text" style="font-size:14px; font-weight:500; margin-bottom:10px;">-</div>
+              <button class="btn btn-outline" style="padding:6px 12px; font-size:12px;" onclick="speakText(currentConvQ1(), 0.95)">🔊 Putar Pertanyaan 1</button>
+            </div>
+
+            <div style="padding:14px; border:1px solid #D1E7DF; border-radius:8px; background:#F8FAFC;">
+              <div style="font-size:11px; font-weight:700; color:var(--primary); margin-bottom:6px;">PERTANYAAN AUDIO 2</div>
+              <div id="s3-q2-text" style="font-size:14px; font-weight:500; margin-bottom:10px;">-</div>
+              <button class="btn btn-outline" style="padding:6px 12px; font-size:12px;" onclick="speakText(currentConvQ2(), 0.95)">🔊 Putar Pertanyaan 2</button>
+            </div>
+          </div>
+
+          <div style="padding:14px; background:#FFFBEB; border:1px solid #FDE68A; border-radius:8px; margin-bottom:16px; font-size:13px;">
+            <strong>💡 Panduan Pertanyaan Spontan Penguji (Live Follow-Up):</strong><br>
+            <span id="s3-followup-guide">-</span>
+          </div>
+
+          <div class="audio-control-bar">
+            <button id="btn-rec-s3" class="btn btn-record" onclick="toggleRecording('s3')">
+              <span>🎙️ Rekam Jawaban Santri</span>
+            </button>
+            <div id="s3-live-vu" class="vu-meter-box"></div>
+            <div style="flex:1; min-width:210px;">
+              <label>PENILAIAN SPONTAN PENGUJI (KELIPATAN 5, MAKS 40)</label>
+              <select id="s3-manual-score" onchange="saveCurrentConvDraft()">
+                <option value="40">40 — Sangat Lancar, Spontan & Tepat</option>
+                <option value="35" selected>35 — Lancar & Komunikatif</option>
+                <option value="30">30 — Cukup Lancar, Sedikit Jeda</option>
+                <option value="25">25 — Terbata-bata Namun Dipahami</option>
+                <option value="20">20 — Kesulitan Merespons Pertanyaan</option>
+                <option value="15">15 — Sangat Minim Kosakata</option>
+                <option value="10">10 — Hampir Tidak Merespons</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; margin-top:20px;">
+            <button class="btn btn-outline" onclick="prevStudentInSession()">&larr; Santri Sebelumnya</button>
+            <button class="btn btn-primary" onclick="nextStudentOrSession(3)">Selesaikan Batch & Koreksi Otomatis &check;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 3: REKAP & VERIFIKASI PENGUJI -->
+      <div id="view-recap" class="hidden">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+          <div>
+            <h1 class="page-heading">Rekap & Verifikasi Nilai Penguji</h1>
+            <p class="page-desc">Periksa hasil koreksi otomatis (kelipatan 5). Edit skor jika diperlukan sebelum menyimpan permanen ke Google Sheets.</p>
+          </div>
+          <button class="btn btn-outline" onclick="switchView('setup')">+ Mulai Batch Baru</button>
+        </div>
+
+        <div class="section-card">
+          <div class="card-header-row" style="justify-content:space-between;">
+            <div style="display:flex; align-items:center; gap:12px;">
+              <div class="card-num-box">✓</div>
+              <div>
+                <div style="font-weight:700; font-size:15px;">Hasil Batch Terakhir (Dapat Diedit)</div>
+                <div style="font-size:12px; color:var(--text-muted);">Otomatis dibulatkan ke kelipatan 5 tanpa koma.</div>
+              </div>
+            </div>
+            <button id="btn-finalize" class="btn btn-primary" onclick="finalizeToSheet()">
+              <span>💾 Finalisasi & Simpan ke Google Sheets</span>
+            </button>
+          </div>
+
+          <div style="overflow-x:auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Nama Santri</th>
+                  <th>Kelas / Jenjang</th>
+                  <th>Reading & Speaking</th>
+                  <th>Listening & Writing</th>
+                  <th>Conversation (Aliyah)</th>
+                  <th>Nilai Akhir</th>
+                  <th>Audio Drive & Catatan AI</th>
+                </tr>
+              </thead>
+              <tbody id="recap-tbody">
+                <tr><td colspan="7" style="text-align:center; color:var(--text-muted);">Belum ada batch yang baru selesai diuji.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div style="font-weight:700; font-size:15px; margin-bottom:12px;">Riwayat Tersimpan di Tab Hasil_Ujian</div>
+          <div style="overflow-x:auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Waktu</th>
+                  <th>Nama</th>
+                  <th>Kelas</th>
+                  <th>R&S</th>
+                  <th>L&W</th>
+                  <th>Conv</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody id="history-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MODAL PIN PENGUJI -->
+<div id="pin-modal" class="loader-overlay hidden" style="background:rgba(17,24,39,0.55);">
+  <div style="background:#FFFFFF; padding:28px; border-radius:14px; width:100%; max-width:360px; box-shadow:0 20px 40px rgba(0,0,0,0.2);">
+    <div style="font-family:'Newsreader',serif; font-size:22px; font-weight:600; margin-bottom:6px;">Akses Penguji</div>
+    <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">Masukkan PIN penguji untuk membuka halaman rekap & verifikasi nilai rahasia.</p>
+    <input type="password" id="pin-input" placeholder="Masukkan PIN (Default: 2627)" style="margin-bottom:16px;" onkeydown="if(event.key==='Enter') submitPin()">
+    <div style="display:flex; justify-content:flex-end; gap:10px;">
+      <button class="btn btn-outline" onclick="closePinModal()">Batal</button>
+      <button class="btn btn-primary" onclick="submitPin()">Buka Rekap</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // =========================================================================
+  // KONFIGURASI BACKEND GOOGLE APPS SCRIPT
+  // Ganti URL di bawah dengan URL Web App (/exec) dari Google Apps Script Anda
+  // =========================================================================
+  const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbyHsEPTClMm9nNAQdpKZ_WLUlv8FfAV6gmrkcaHmGaLj9NojLsmo2NCLh_8zsn_jfIh0A/exec';
+
+  let DB = { santri: [], bankReading: [], bankDictation: [], bankConversation: [], hasilUjian: [] };
+  let BATCH = [];
+  let currentSession = 1;
+  let currentStudentIdx = 0;
+  let evaluatedResults = [];
+  let isExaminerUnlocked = false;
+
+  // Audio Recording, VU Meter & Speech Recognition State
+  let mediaRecorder = null;
+  let audioChunks = [];
+  let isRecording = false;
+  let recognition = null;
+  let liveTranscriptBuffer = '';
+
+  let testStream = null;
+  let audioCtx = null;
+  let analyser = null;
+  let vuAnimFrame = null;
+  let isTestingMic = false;
+
+  window.onload = async function() {
+    buildVuBars('setup-vu-meter', 16);
+    buildVuBars('sidebar-vu', 12);
+    buildVuBars('s1-live-vu', 12);
+    buildVuBars('s3-live-vu', 12);
+
+    initSpeechRecognition();
+    await loadDatabaseFromGAS();
+  };
+
+  function buildVuBars(containerId, count) {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    el.innerHTML = '';
+    for (let i = 0; i < count; i++) {
+      const bar = document.createElement('div');
+      bar.className = 'vu-bar';
+      el.appendChild(bar);
+    }
+  }
+
+  function updateAllVuMeters(levelPercent) {
+    ['setup-vu-meter', 'sidebar-vu', 's1-live-vu', 's3-live-vu'].forEach(id => {
+      const container = document.getElementById(id);
+      if (!container) return;
+      const bars = container.children;
+      const activeCount = Math.round((levelPercent / 100) * bars.length);
+      for (let i = 0; i < bars.length; i++) {
+        bars[i].className = 'vu-bar';
+        if (i < activeCount) {
+          if (i < bars.length * 0.6) bars[i].classList.add('active-green');
+          else if (i < bars.length * 0.85) bars[i].classList.add('active-yellow');
+          else bars[i].classList.add('active-red');
+        }
+      }
+    });
+  }
+
+  // Helper API Call ke Google Apps Script
+  async function loadDatabaseFromGAS() {
+    if (!GAS_API_URL || GAS_API_URL.includes('PASTE_URL')) {
+      hideLoader();
+      alert('Perhatian: Variabel GAS_API_URL di dalam index.html belum diisi dengan URL Web App Google Apps Script.');
+      return;
+    }
+    showLoader('Memuat Database Santri & Bank Soal dari Google Sheets...');
+    try {
+      const res = await fetch(GAS_API_URL);
+      const json = await res.json();
+      if (json.status === 'ok') {
+        DB = json.data;
+        renderStudentDropdowns();
+        renderHistoryTable();
+      } else {
+        alert('Error dari Backend: ' + json.message);
+      }
+    } catch (err) {
+      alert('Gagal terhubung ke Google Apps Script. Pastikan deployment diset "Anyone": ' + err.message);
+    }
+    hideLoader();
+  }
+
+  async function postToGAS(payloadObj) {
+    const res = await fetch(GAS_API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payloadObj)
+    });
+    return await res.json();
+  }
+
+  function showLoader(msg) {
+    document.getElementById('loader-text').innerText = msg;
+    document.getElementById('loader').classList.remove('hidden');
+  }
+  function hideLoader() {
+    document.getElementById('loader').classList.add('hidden');
+  }
+
+  // =========================================================================
+  // HARDWARE TEST MIC & REAL-TIME VISUAL AUDIO METER
+  // =========================================================================
+  async function populateMicDevices() {
+    try {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const audioInputs = devices.filter(d => d.kind === 'audioinput');
+      const select = document.getElementById('mic-device-select');
+      const currentVal = select.value;
+      select.innerHTML = '';
+      audioInputs.forEach((dev, idx) => {
+        const opt = document.createElement('option');
+        opt.value = dev.deviceId;
+        opt.text = dev.label || `Mikrofon #${idx + 1}`;
+        select.appendChild(opt);
+      });
+      if (currentVal) select.value = currentVal;
+    } catch (e) {
+      console.warn('Tidak dapat membaca daftar perangkat audio:', e);
+    }
+  }
+
+  function startAudioVisualizer(stream) {
+    stopAudioVisualizer();
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const source = audioCtx.createMediaStreamSource(stream);
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 256;
+    source.connect(analyser);
+
+    const dataArray = new Uint8Array(analyser.frequencyBinCount);
+    function renderLoop() {
+      analyser.getByteFrequencyData(dataArray);
+      let sum = 0;
+      for (let i = 0; i < dataArray.length; i++) sum += dataArray[i];
+      const avg = sum / dataArray.length;
+      const percent = Math.min(100, Math.round((avg / 95) * 100));
+      updateAllVuMeters(percent);
+      vuAnimFrame = requestAnimationFrame(renderLoop);
+    }
+    renderLoop();
+  }
+
+  function stopAudioVisualizer() {
+    if (vuAnimFrame) cancelAnimationFrame(vuAnimFrame);
+    if (audioCtx && audioCtx.state !== 'closed') {
+      try { audioCtx.close(); } catch (e) {}
+    }
+    updateAllVuMeters(0);
+  }
+
+  async function toggleMicTest() {
+    const btn = document.getElementById('btn-test-mic');
+    const badge = document.getElementById('mic-test-badge');
+    const feedback = document.getElementById('mic-test-feedback');
+    const sidebarStatus = document.getElementById('sidebar-mic-status');
+
+    if (!isTestingMic) {
+      try {
+        const selectedDeviceId = document.getElementById('mic-device-select').value;
+        const constraints = selectedDeviceId
+          ? { audio: { deviceId: { exact: selectedDeviceId } } }
+          : { audio: true };
+
+        testStream = await navigator.mediaDevices.getUserMedia(constraints);
+        await populateMicDevices();
+        startAudioVisualizer(testStream);
+
+        isTestingMic = true;
+        btn.innerHTML = '<span>⏹️ Hentikan Test Mic</span>';
+        btn.classList.remove('btn-primary');
+        btn.classList.add('btn-record', 'recording');
+        badge.innerText = 'Mic Aktif ✓';
+        badge.className = 'pill-badge aliyah';
+        sidebarStatus.innerText = 'Aktif & Terhubung ✓';
+        sidebarStatus.style.color = '#047857';
+        feedback.innerHTML = '<span style="color:#047857; font-weight:600;">Mikrofon berhasil diakses! Silakan berbicara dan pastikan batang hijau/kuning bergerak.</span>';
+      } catch (err) {
+        badge.innerText = 'Error Akses';
+        feedback.innerHTML = `<span style="color:#DC2626; font-weight:600;">Gagal mengakses mikrofon: ${err.message}</span>`;
+      }
+    } else {
+      stopMicTest();
+    }
+  }
+
+  function stopMicTest() {
+    if (testStream) {
+      testStream.getTracks().forEach(t => t.stop());
+      testStream = null;
+    }
+    stopAudioVisualizer();
+    isTestingMic = false;
+    const btn = document.getElementById('btn-test-mic');
+    btn.innerHTML = '<span>🎤 Test Mic Sekarang</span>';
+    btn.className = 'btn btn-primary';
+  }
+
+  async function restartMicTestIfActive() {
+    if (isTestingMic) {
+      stopMicTest();
+      await toggleMicTest();
+    }
+  }
+
+  // =========================================================================
+  // SPEECH RECOGNITION & RECORDING UJIAN
+  // =========================================================================
+  function initSpeechRecognition() {
+    const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRec) {
+      recognition = new SpeechRec();
+      recognition.lang = 'en-US';
+      recognition.continuous = true;
+      recognition.interimResults = true;
+
+      recognition.onresult = function(event) {
+        let finalStr = '';
+        for (let i = 0; i < event.results.length; i++) {
+          finalStr += event.results[i][0].transcript + ' ';
+        }
+        liveTranscriptBuffer = finalStr.trim();
+        if (currentSession === 1) {
+          document.getElementById('s1-transcript-preview').innerText = liveTranscriptBuffer || 'Mendengarkan...';
+          BATCH[currentStudentIdx].readingTranscript = liveTranscriptBuffer;
+        } else if (currentSession === 3) {
+          BATCH[currentStudentIdx].convTranscript = liveTranscriptBuffer;
+        }
+      };
+    }
+  }
+
+  async function toggleRecording(sessionKey) {
+    if (isTestingMic) stopMicTest();
+    const btn = document.getElementById(`btn-rec-${sessionKey}`);
+
+    if (!isRecording) {
+      try {
+        const selectedDeviceId = document.getElementById('mic-device-select').value;
+        const constraints = selectedDeviceId
+          ? { audio: { deviceId: { exact: selectedDeviceId } } }
+          : { audio: true };
+
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        startAudioVisualizer(stream);
+
+        mediaRecorder = new MediaRecorder(stream);
+        audioChunks = [];
+        liveTranscriptBuffer = '';
+
+        mediaRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
+        mediaRecorder.onstop = () => {
+          const blob = new Blob(audioChunks, { type: 'audio/webm' });
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            if (sessionKey === 's1') {
+              BATCH[currentStudentIdx].readingAudioBase64 = reader.result;
+              document.getElementById('s1-rec-status').innerText = 'Audio Tersimpan ✓';
+            } else if (sessionKey === 's3') {
+              BATCH[currentStudentIdx].convAudioBase64 = reader.result;
+            }
+          };
+          reader.readAsDataURL(blob);
+          stream.getTracks().forEach(t => t.stop());
+          stopAudioVisualizer();
+        };
+
+        mediaRecorder.start();
+        if (recognition) { try { recognition.start(); } catch(e) {} }
+        isRecording = true;
+        btn.classList.add('recording');
+        btn.innerHTML = '<span>⏹️ Hentikan Rekaman</span>';
+        document.getElementById('sidebar-mic-status').innerText = 'Sedang Merekam...';
+      } catch (err) {
+        alert('Izin mikrofon ditolak atau mikrofon tidak terdeteksi: ' + err.message);
+      }
+    } else {
+      stopRecordingIfActive();
+    }
+  }
+
+  function stopRecordingIfActive() {
+    if (isRecording && mediaRecorder) {
+      mediaRecorder.stop();
+      if (recognition) { try { recognition.stop(); } catch(e) {} }
+      isRecording = false;
+      document.getElementById('sidebar-mic-status').innerText = 'Siap Merekam';
+      document.querySelectorAll('.btn-record').forEach(b => {
+        b.classList.remove('recording');
+        b.innerHTML = '<span>🎙️ Mulai Rekam Ulang</span>';
+      });
+    }
+  }
+
+  // =========================================================================
+  // LOGIKA BATCH, NAVIGASI & EVALUASI
+  // =========================================================================
+  function renderStudentDropdowns() {
+    const count = parseInt(document.getElementById('batch-count').value, 10);
+    const filter = document.getElementById('filter-status').value;
+    const container = document.getElementById('student-selectors-grid');
+    container.innerHTML = '';
+
+    const filteredSantri = DB.santri.filter(s => {
+      if (filter === 'belum') return String(s.Status_Ujian).toLowerCase() !== 'sudah';
+      return true;
+    });
+
+    for (let i = 0; i < count; i++) {
+      const div = document.createElement('div');
+      div.className = 'form-group';
+      let optionsHtml = `<option value="">-- Pilih Santri #${i + 1} --</option>`;
+      filteredSantri.forEach(s => {
+        const badge = s.Status_Ujian === 'Sudah' ? ' [Sudah]' : '';
+        optionsHtml += `<option value="${s.Nama}">${s.Nama} — Kelas ${s.Kelas} (${s.Jenjang})${badge}</option>`;
+      });
+
+      div.innerHTML = `
+        <label>PESERTA #${i + 1}</label>
+        <select id="select-santri-${i}">${optionsHtml}</select>
+      `;
+      container.appendChild(div);
+    }
+  }
+
+  function startBatchExam() {
+    if (isTestingMic) stopMicTest();
+    const count = parseInt(document.getElementById('batch-count').value, 10);
+    const selectedNames = [];
+    for (let i = 0; i < count; i++) {
+      const val = document.getElementById(`select-santri-${i}`).value;
+      if (!val) { alert(`Silakan pilih nama santri untuk Peserta #${i + 1}.`); return; }
+      if (selectedNames.includes(val)) { alert(`Nama "${val}" dipilih ganda.`); return; }
+      selectedNames.push(val);
+    }
+
+    const usedReadingIds = new Set();
+    const usedDictationIds = new Set();
+    const usedConvIds = new Set();
+
+    BATCH = selectedNames.map(name => {
+      const sObj = DB.santri.find(x => x.Nama === name);
+      const kelasStr = String(sObj.Kelas).trim();
+      const isAliyah = sObj.Jenjang === 'Aliyah';
+
+      const rPool = DB.bankReading.filter(r => String(r.Kelas).trim() === kelasStr && !usedReadingIds.has(r.ID_Soal));
+      const rPick = rPool.length ? rPool[Math.floor(Math.random() * rPool.length)] : DB.bankReading[0];
+      if (rPick) usedReadingIds.add(rPick.ID_Soal);
+
+      const dPool = DB.bankDictation.filter(d => String(d.Kelas).trim() === kelasStr && !usedDictationIds.has(d.ID_Soal));
+      const dPick = dPool.length ? dPool[Math.floor(Math.random() * dPool.length)] : DB.bankDictation[0];
+      if (dPick) usedDictationIds.add(dPick.ID_Soal);
+
+      let cPick = null;
+      if (isAliyah) {
+        const cPool = DB.bankConversation.filter(c => String(c.Kelas).trim() === kelasStr && !usedConvIds.has(c.ID_Soal));
+        cPick = cPool.length ? cPool[Math.floor(Math.random() * cPool.length)] : DB.bankConversation[0];
+        if (cPick) usedConvIds.add(cPick.ID_Soal);
+      }
+
+      return {
+        nama: sObj.Nama,
+        kelas: kelasStr,
+        jenjang: sObj.Jenjang,
+        readingSoal: rPick,
+        readingTranscript: '',
+        readingAudioBase64: '',
+        dictationSoal: dPick,
+        dictationPlayCount: 0,
+        dictationAnswer: '',
+        convSoal: cPick,
+        convTranscript: '',
+        convAudioBase64: '',
+        convManualBoost: 35
+      };
+    });
+
+    const hasAliyah = BATCH.some(b => b.jenjang === 'Aliyah');
+    document.getElementById('tab-s1').classList.remove('disabled');
+    document.getElementById('tab-s2').classList.remove('disabled');
+    if (hasAliyah) document.getElementById('tab-s3').classList.remove('disabled');
+    else document.getElementById('tab-s3').classList.add('disabled');
+
+    currentSession = 1;
+    currentStudentIdx = 0;
+    switchView('exam');
+    renderExamScreen();
+  }
+
+  function switchView(viewName) {
+    document.getElementById('view-setup').classList.add('hidden');
+    document.getElementById('view-exam').classList.add('hidden');
+    document.getElementById('view-recap').classList.add('hidden');
+    document.querySelectorAll('.step-tab').forEach(el => el.classList.remove('active'));
+
+    if (viewName === 'setup') {
+      document.getElementById('view-setup').classList.remove('hidden');
+      document.getElementById('tab-setup').classList.add('active');
+      document.getElementById('sidebar-heading').innerText = 'NAVIGASI UJIAN';
+      document.getElementById('sidebar-list').innerHTML = `
+        <div class="nav-item active">
+          <div class="nav-item-left">
+            <div class="status-dot"></div>
+            <div>
+              <div class="nav-name">Setup & Audio Check</div>
+              <div class="nav-meta">Maksimal 6 santri</div>
+            </div>
+          </div>
+        </div>`;
+    } else if (viewName === 'exam') {
+      document.getElementById('view-exam').classList.remove('hidden');
+      document.getElementById(`tab-s${currentSession}`).classList.add('active');
+    } else if (viewName === 'recap') {
+      document.getElementById('view-recap').classList.remove('hidden');
+    }
+  }
+
+  function switchSession(sessNum) {
+    if (BATCH.length === 0) return;
+    if (sessNum === 3 && !BATCH.some(b => b.jenjang === 'Aliyah')) return;
+    stopRecordingIfActive();
+
+    currentSession = sessNum;
+    if (sessNum === 3) {
+      const firstAliyah = BATCH.findIndex(b => b.jenjang === 'Aliyah');
+      currentStudentIdx = firstAliyah !== -1 ? firstAliyah : 0;
+    } else {
+      currentStudentIdx = 0;
+    }
+    switchView('exam');
+    renderExamScreen();
+  }
+
+  function renderSidebarStudents() {
+    const list = document.getElementById('sidebar-list');
+    document.getElementById('sidebar-heading').innerText = `STEP 0${currentSession} | PESERTA BATCH`;
+    list.innerHTML = '';
+
+    BATCH.forEach((s, idx) => {
+      if (currentSession === 3 && s.jenjang !== 'Aliyah') return;
+      const isActive = idx === currentStudentIdx;
+      const badgeClass = s.jenjang === 'Aliyah' ? 'aliyah' : 'mts';
+      const item = document.createElement('div');
+      item.className = `nav-item ${isActive ? 'active' : ''}`;
+      item.onclick = () => { stopRecordingIfActive(); currentStudentIdx = idx; renderExamScreen(); };
+      item.innerHTML = `
+        <div class="nav-item-left">
+          <div class="status-dot"></div>
+          <div>
+            <div class="nav-name">${s.nama}</div>
+            <div class="nav-meta">Kelas ${s.kelas}</div>
+          </div>
+        </div>
+        <span class="pill-badge ${badgeClass}">${s.jenjang === 'Aliyah' ? 'MA' : 'MTs'}</span>
+      `;
+      list.appendChild(item);
+    });
+  }
+
+  function renderExamScreen() {
+    renderSidebarStudents();
+    const s = BATCH[currentStudentIdx];
+
+    document.getElementById('panel-s1').classList.add('hidden');
+    document.getElementById('panel-s2').classList.add('hidden');
+    document.getElementById('panel-s3').classList.add('hidden');
+
+    if (currentSession === 1) {
+      document.getElementById('exam-session-title').innerText = 'Session 01 — Reading & Speaking';
+      document.getElementById('exam-session-desc').innerText = 'Santri membaca nyaring fabel/cerpen sesuai jenjang kelas menggunakan mikrofon kondensor.';
+      document.getElementById('panel-s1').classList.remove('hidden');
+
+      document.getElementById('s1-badge').innerText = `0${currentStudentIdx + 1}`;
+      document.getElementById('s1-student-name').innerText = `${s.nama} (Kelas ${s.kelas} — ${s.jenjang})`;
+      document.getElementById('s1-passage-meta').innerText = `Judul Teks: "${s.readingSoal.Judul}" (${s.readingSoal.ID_Soal})`;
+      document.getElementById('s1-passage-text').innerText = s.readingSoal.Teks_Bacaan;
+      document.getElementById('s1-transcript-preview').innerText = s.readingTranscript || 'Tekan tombol rekam saat santri mulai membaca...';
+      document.getElementById('s1-rec-status').innerText = s.readingAudioBase64 ? 'Audio Tersimpan ✓' : 'Siap Merekam';
+
+    } else if (currentSession === 2) {
+      document.getElementById('exam-session-title').innerText = 'Session 02 — Listening & Writing (Dictation)';
+      document.getElementById('exam-session-desc').innerText = 'Putar audio maksimal 2x lewat speaker, lalu santri mengetik ulang kalimat tersebut.';
+      document.getElementById('panel-s2').classList.remove('hidden');
+
+      document.getElementById('s2-badge').innerText = `0${currentStudentIdx + 1}`;
+      document.getElementById('s2-student-name').innerText = `${s.nama} (Kelas ${s.kelas} — ${s.jenjang})`;
+      const sisa = Math.max(0, 2 - s.dictationPlayCount);
+      const btnTts = document.getElementById('btn-play-tts');
+      btnTts.innerHTML = `<span>🔊 Putar Audio Kalimat (Sisa: ${sisa}x)</span>`;
+      btnTts.disabled = sisa === 0;
+      document.getElementById('s2-answer-input').value = s.dictationAnswer || '';
+
+    } else if (currentSession === 3) {
+      document.getElementById('exam-session-title').innerText = 'Session 03 — Conversation (Khusus Aliyah)';
+      document.getElementById('exam-session-desc').innerText = 'Putar pertanyaan berantai, rekam jawaban via mikrofon, lalu berikan 1 pertanyaan spontan.';
+      document.getElementById('panel-s3').classList.remove('hidden');
+
+      document.getElementById('s3-badge').innerText = `0${currentStudentIdx + 1}`;
+      document.getElementById('s3-student-name').innerText = `${s.nama} (Kelas ${s.kelas} — Aliyah)`;
+      document.getElementById('s3-tema').innerText = `Tema Kartu: ${s.convSoal.Tema} (${s.convSoal.ID_Soal})`;
+      document.getElementById('s3-q1-text').innerText = s.convSoal.Pertanyaan_1;
+      document.getElementById('s3-q2-text').innerText = s.convSoal.Pertanyaan_2;
+      document.getElementById('s3-followup-guide').innerText = s.convSoal.Panduan_FollowUp;
+      document.getElementById('s3-manual-score').value = s.convManualBoost || 35;
+    }
+  }
+
+  function saveCurrentDictationDraft() { BATCH[currentStudentIdx].dictationAnswer = document.getElementById('s2-answer-input').value; }
+  function saveCurrentConvDraft() { BATCH[currentStudentIdx].convManualBoost = parseInt(document.getElementById('s3-manual-score').value, 10); }
+
+  function speakText(text, rate) {
+    if (!('speechSynthesis' in window)) { alert('Browser tidak mendukung Text-to-Speech.'); return; }
+    window.speechSynthesis.cancel();
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = 'en-US';
+    utter.rate = rate;
+    window.speechSynthesis.speak(utter);
+  }
+
+  function playDictationAudio() {
+    const s = BATCH[currentStudentIdx];
+    if (s.dictationPlayCount >= 2) return;
+    s.dictationPlayCount++;
+    speakText(s.dictationSoal.Kalimat_Asli, s.jenjang === 'Tsanawiyah' ? 0.85 : 1.0);
+    const sisa = Math.max(0, 2 - s.dictationPlayCount);
+    const btn = document.getElementById('btn-play-tts');
+    btn.innerHTML = `<span>🔊 Putar Audio Kalimat (Sisa: ${sisa}x)</span>`;
+    if (sisa === 0) btn.disabled = true;
+  }
+
+  function currentConvQ1() { return BATCH[currentStudentIdx].convSoal.Pertanyaan_1; }
+  function currentConvQ2() { return BATCH[currentStudentIdx].convSoal.Pertanyaan_2; }
+
+  function prevStudentInSession() {
+    stopRecordingIfActive();
+    if (currentSession === 3) {
+      for (let i = currentStudentIdx - 1; i >= 0; i--) {
+        if (BATCH[i].jenjang === 'Aliyah') { currentStudentIdx = i; renderExamScreen(); return; }
+      }
+    } else if (currentStudentIdx > 0) {
+      currentStudentIdx--;
+      renderExamScreen();
+    }
+  }
+
+  function nextStudentOrSession(sessNum) {
+    stopRecordingIfActive();
+    if (sessNum === 2) saveCurrentDictationDraft();
+    if (sessNum === 3) saveCurrentConvDraft();
+
+    if (sessNum === 1 || sessNum === 2) {
+      if (currentStudentIdx + 1 < BATCH.length) {
+        currentStudentIdx++;
+        renderExamScreen();
+      } else {
+        if (sessNum === 1) switchSession(2);
+        else if (sessNum === 2) {
+          if (BATCH.some(b => b.jenjang === 'Aliyah')) switchSession(3);
+          else processAllBatchEvaluations();
+        }
+      }
+    } else if (sessNum === 3) {
+      for (let i = currentStudentIdx + 1; i < BATCH.length; i++) {
+        if (BATCH[i].jenjang === 'Aliyah') { currentStudentIdx = i; renderExamScreen(); return; }
+      }
+      processAllBatchEvaluations();
+    }
+  }
+
+  async function processAllBatchEvaluations() {
+    showLoader('Mengunggah Rekaman Audio & Mengoreksi Jawaban Otomatis...');
+    evaluatedResults = [];
+
+    for (let i = 0; i < BATCH.length; i++) {
+      const b = BATCH[i];
+      document.getElementById('loader-text').innerText = `Memproses (${i + 1}/${BATCH.length}): ${b.nama}...`;
+
+      const payload = {
+        nama: b.nama,
+        kelas: b.kelas,
+        jenjang: b.jenjang,
+        readingTarget: b.readingSoal.Teks_Bacaan,
+        readingTranscript: b.readingTranscript,
+        readingAudioBase64: b.readingAudioBase64,
+        dictationTarget: b.dictationSoal.Kalimat_Asli,
+        dictationAnswer: b.dictationAnswer,
+        convTema: b.convSoal ? b.convSoal.Tema : '',
+        convQ1: b.convSoal ? b.convSoal.Pertanyaan_1 : '',
+        convQ2: b.convSoal ? b.convSoal.Pertanyaan_2 : '',
+        convTranscript: b.convTranscript,
+        convAudioBase64: b.convAudioBase64,
+        convManualBoost: b.convManualBoost
+      };
+
+      try {
+        const res = await postToGAS({ action: 'evaluateStudent', payload: payload });
+        if (res.status === 'ok') evaluatedResults.push(res.result);
+        else throw new Error(res.message);
+      } catch (e) {
+        evaluatedResults.push({
+          nama: b.nama, kelas: b.kelas, jenjang: b.jenjang,
+          skor_reading: 0, skor_dictation: 0, skor_conversation: 0, nilai_akhir: 0,
+          link_audio: '-', catatan_ai: 'Gagal memproses otomatis, silakan input manual.'
+        });
+      }
+    }
+
+    hideLoader();
+    alert('Seluruh sesi batch selesai! Nilai tersimpan secara rahasia di Panel Rekap Penguji.');
+    openPinModal();
+  }
+
+  // PIN & Rekap Penguji
+  function openPinModal() {
+    if (isExaminerUnlocked) { renderRecapTable(); switchView('recap'); return; }
+    document.getElementById('pin-input').value = '';
+    document.getElementById('pin-modal').classList.remove('hidden');
+    document.getElementById('pin-input').focus();
+  }
+  function closePinModal() { document.getElementById('pin-modal').classList.add('hidden'); }
+
+  async function submitPin() {
+    const pin = document.getElementById('pin-input').value;
+    showLoader('Memverifikasi PIN...');
+    try {
+      const res = await postToGAS({ action: 'verifyPin', pin: pin });
+      hideLoader();
+      if (res.valid) {
+        isExaminerUnlocked = true;
+        closePinModal();
+        renderRecapTable();
+        switchView('recap');
+      } else {
+        alert('PIN Penguji salah!');
+      }
+    } catch (e) {
+      hideLoader();
+      alert('Gagal memverifikasi PIN: ' + e.message);
+    }
+  }
+
+  function renderRecapTable() {
+    const tbody = document.getElementById('recap-tbody');
+    if (evaluatedResults.length === 0) return;
+    tbody.innerHTML = '';
+
+    evaluatedResults.forEach((r, idx) => {
+      const isAliyah = r.jenjang === 'Aliyah';
+      const maxR = isAliyah ? 30 : 50;
+      const maxD = isAliyah ? 30 : 50;
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><strong>${r.nama}</strong></td>
+        <td>Kelas ${r.kelas} (${r.jenjang})</td>
+        <td>
+          <input type="number" step="5" min="0" max="${maxR}" class="score-input"
+            value="${r.skor_reading}" onchange="updateRecapRow(${idx}, 'reading', this.value)">
+          <span style="font-size:11px; color:var(--text-muted);">/ ${maxR}</span>
+        </td>
+        <td>
+          <input type="number" step="5" min="0" max="${maxD}" class="score-input"
+            value="${r.skor_dictation}" onchange="updateRecapRow(${idx}, 'dictation', this.value)">
+          <span style="font-size:11px; color:var(--text-muted);">/ ${maxD}</span>
+        </td>
+        <td>
+          ${isAliyah ? `<input type="number" step="5" min="0" max="40" class="score-input"
+            value="${r.skor_conversation}" onchange="updateRecapRow(${idx}, 'conv', this.value)">
+            <span style="font-size:11px; color:var(--text-muted);">/ 40</span>` : '<span style="color:#9CA3AF;">-</span>'}
+        </td>
+        <td><strong id="total-cell-${idx}" style="font-size:15px; color:var(--primary);">${r.nilai_akhir}</strong></td>
+        <td style="font-size:12px; max-width:260px;">
+          <div>${r.catatan_ai}</div>
+          <div style="color:var(--primary); margin-top:4px; word-break:break-all;">${r.link_audio}</div>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function snapTo5(val, max) {
+    let n = Math.round((Number(val) || 0) / 5) * 5;
+    if (n < 0) n = 0;
+    if (n > max) n = max;
+    return n;
+  }
+
+  function updateRecapRow(idx, field, rawVal) {
+    const r = evaluatedResults[idx];
+    const isAliyah = r.jenjang === 'Aliyah';
+    if (field === 'reading') r.skor_reading = snapTo5(rawVal, isAliyah ? 30 : 50);
+    if (field === 'dictation') r.skor_dictation = snapTo5(rawVal, isAliyah ? 30 : 50);
+    if (field === 'conv') r.skor_conversation = snapTo5(rawVal, 40);
+
+    r.nilai_akhir = snapTo5(r.skor_reading + r.skor_dictation + (isAliyah ? r.skor_conversation : 0), 100);
+    document.getElementById(`total-cell-${idx}`).innerText = r.nilai_akhir;
+  }
+
+  async function finalizeToSheet() {
+    if (evaluatedResults.length === 0) return;
+    showLoader('Menyimpan Nilai Final ke Google Sheets...');
+    try {
+      const res = await postToGAS({ action: 'finalizeBatch', results: evaluatedResults });
+      hideLoader();
+      if (res.status === 'ok') {
+        alert(`Berhasil menyimpan ${res.result.count} data nilai ke tab Hasil_Ujian!`);
+        evaluatedResults = [];
+        document.getElementById('recap-tbody').innerHTML = '<tr><td colspan="7" style="text-align:center; color:#047857;">Data sudah difinalisasi ke Google Sheets ✓</td></tr>';
+        await loadDatabaseFromGAS();
+      } else {
+        alert('Error: ' + res.message);
+      }
+    } catch (e) {
+      hideLoader();
+      alert('Gagal menyimpan ke Google Sheets: ' + e.message);
+    }
+  }
+
+  function renderHistoryTable() {
+    const tbody = document.getElementById('history-tbody');
+    if (!DB.hasilUjian || DB.hasilUjian.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--text-muted);">Belum ada data di tab Hasil_Ujian.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = DB.hasilUjian.slice().reverse().map(h => `
+      <tr>
+        <td>${h.Timestamp}</td>
+        <td><strong>${h.Nama}</strong></td>
+        <td>${h.Kelas} (${h.Jenjang})</td>
+        <td>${h.Skor_Reading}</td>
+        <td>${h.Skor_Dictation}</td>
+        <td>${h.Skor_Conversation}</td>
+        <td><strong style="color:var(--primary);">${h.Nilai_Akhir}</strong></td>
+      </tr>
+    `).join('');
+  }
+</script>
+</body>
+</html>
