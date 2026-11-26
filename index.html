@@ -384,17 +384,17 @@
 
 <div id="loader" class="loader-overlay">
   <div class="spinner"></div>
-  <div id="loader-text" style="font-weight:600; color:#047857;">Menghubungkan ke Database Google Sheets...</div>
+  <div id="loader-text" style="font-weight:600; color:#047857;">Load Database...</div>
 </div>
 
 <div class="app-shell">
   <!-- TOP STEPPER BAR -->
   <div class="top-bar">
     <div class="brand-box">
-      <div class="brand-badge">EN</div>
+      <div class="brand-badge">EA-PMD</div>
       <div>
-        <div class="brand-title">English Exam</div>
-        <div class="brand-sub">Pesantren Assessment 26/27</div>
+        <div class="brand-title">English Assignment</div>
+        <div class="brand-sub">Pesantren Murottal Depok 26/27</div>
       </div>
     </div>
 
@@ -402,7 +402,7 @@
       <div id="tab-setup" class="step-tab active" onclick="switchView('setup')">
         <div class="step-circle">00</div>
         <div>
-          <div class="step-info-title">Setup & Cek Mic</div>
+          <div class="step-info-title">Setup & Check Mic</div>
           <div class="step-info-sub">Pilih 1–6 Santri</div>
         </div>
       </div>
@@ -411,7 +411,7 @@
         <div class="step-circle">01</div>
         <div>
           <div class="step-info-title">Reading & Speaking</div>
-          <div class="step-info-sub">Fabel / Cerpen + Mic</div>
+          <div class="step-info-sub">Fabel / Cerpen</div>
         </div>
       </div>
 
@@ -419,7 +419,7 @@
         <div class="step-circle">02</div>
         <div>
           <div class="step-info-title">Listening & Writing</div>
-          <div class="step-info-sub">Dikte Audio (Maks 2x)</div>
+          <div class="step-info-sub">Dikte Audio</div>
         </div>
       </div>
 
@@ -427,13 +427,13 @@
         <div class="step-circle">03</div>
         <div>
           <div class="step-info-title">Conversation</div>
-          <div class="step-info-sub">Khusus Jenjang Aliyah</div>
+          <div class="step-info-sub">Khusus Aliyah</div>
         </div>
       </div>
     </div>
 
     <button class="pin-nav-btn" onclick="openPinModal()">
-      <span>🔒 Rekap Penguji</span>
+      <span>Rekap Penguji</span>
     </button>
   </div>
 
@@ -459,8 +459,8 @@
       <div style="display:flex; flex-direction:column; gap:10px;">
         <!-- Mini Mic Status Widget in Sidebar -->
         <div style="padding: 12px; background: #FFFFFF; border-radius: 8px; border: 1px solid #D1E7DF; font-size: 11px;">
-          <div style="font-weight:700; color:var(--text-dark); margin-bottom:6px;">STATUS MIKROFON</div>
-          <div id="sidebar-mic-status" style="color:var(--text-muted); margin-bottom:6px;">Belum diuji</div>
+          <div style="font-weight:700; color:var(--text-dark); margin-bottom:6px;">STATUS MICROPHONE</div>
+          <div id="sidebar-mic-status" style="color:var(--text-muted); margin-bottom:6px;">Belum di-test</div>
           <div id="sidebar-vu" class="vu-meter-box" style="height:18px; min-width:100%;"></div>
         </div>
 
@@ -477,8 +477,8 @@
 
       <!-- VIEW 1: SETUP BATCH & AUDIO CHECK -->
       <div id="view-setup">
-        <h1 class="page-heading">Step 00 — Setup Batch & Uji Mikrofon</h1>
-        <p class="page-desc">Pastikan mikrofon kondensor terbaca dengan baik sebelum memilih 1–6 santri untuk kloter ujian.</p>
+        <h1 class="page-heading">Step 00 — Setup Batch & Testing Microphone</h1>
+        <p class="page-desc">Pastikan mic terbaca dengan baik sebelum memilih 1–6 santri untuk kloter ujian.</p>
 
         <!-- PANEL TEST MIC & VISUAL AUDIO METER -->
         <div class="section-card" style="background:#FAFFFD; border-color:#B7DFD1;">
@@ -486,8 +486,8 @@
             <div style="display:flex; align-items:center; gap:14px;">
               <div class="card-num-box">🎙️</div>
               <div>
-                <div style="font-weight:700; font-size:15px;">Hardware Check: Mikrofon Kondensor & Audio Meter</div>
-                <div style="font-size:12px; color:var(--text-muted);">Pilih perangkat mikrofon dan ucapkan "Testing 1, 2, 3" untuk melihat indikator level suara.</div>
+                <div style="font-weight:700; font-size:15px;">Hardware Check: Microphone & Audio Meter</div>
+                <div style="font-size:12px; color:var(--text-muted);">Pilih mic dan ucapkan "Testing 1, 2, 3" untuk melihat indikator level suara.</div>
               </div>
             </div>
             <span id="mic-test-badge" class="pill-badge">Standby</span>
@@ -495,14 +495,14 @@
 
           <div style="display:flex; align-items:flex-end; gap:14px; flex-wrap:wrap;">
             <div class="form-group" style="flex:1; min-width:240px;">
-              <label>PILIH PERANGKAT INPUT MIKROFON</label>
+              <label>PILIH INPUT DEVICE MICROPHONE</label>
               <select id="mic-device-select" onchange="restartMicTestIfActive()">
                 <option value="">Default Microphone (Klik Test Mic untuk memuat daftar)</option>
               </select>
             </div>
 
             <div class="form-group">
-              <label>INDIKATOR SINYAL SUARA (REAL-TIME)</label>
+              <label>INDIKATOR SUARA (REAL-TIME)</label>
               <div id="setup-vu-meter" class="vu-meter-box" style="height:40px; min-width:210px;"></div>
             </div>
 
@@ -511,7 +511,7 @@
             </button>
           </div>
           <div id="mic-test-feedback" style="font-size:12px; color:var(--text-muted); margin-top:10px;">
-            Klik tombol <strong>Test Mic Sekarang</strong> untuk mengaktifkan izin browser dan mengecek sensitivitas mikrofon.
+            Klik tombol <strong>Test Mic Sekarang</strong> untuk mengaktifkan izin browser dan mengecek sensitivitas microphone.
           </div>
         </div>
 
@@ -520,14 +520,14 @@
           <div class="card-header-row">
             <div class="card-num-box">01</div>
             <div>
-              <div style="font-weight:700; font-size:15px;">Konfigurasi Peserta Kloter (1–6 Santri)</div>
+              <div style="font-weight:700; font-size:15px;">Konfigurasi Peserta (1–6 Santri)</div>
               <div style="font-size:12px; color:var(--text-muted);">Soal otomatis diacak berbeda untuk tiap santri sesuai kelasnya.</div>
             </div>
           </div>
 
           <div class="form-grid" style="margin-bottom: 20px;">
             <div class="form-group">
-              <label>JUMLAH SANTRI DALAM 1X PANGGIL (MAKS. 6)</label>
+              <label>JUMLAH SANTRI DALAM 1X PANGGIL (MAX 6)</label>
               <select id="batch-count" onchange="renderStudentDropdowns()">
                 <option value="1">1 Santri</option>
                 <option value="2">2 Santri</option>
@@ -552,7 +552,7 @@
             <button class="btn btn-primary" onclick="startBatchExam()">
               <span>Begin Assessment &rarr;</span>
             </button>
-            <span style="font-size: 12px; color: var(--text-muted);">Pastikan indikator VU Meter di atas bergerak saat berbicara.</span>
+            <span style="font-size: 12px; color: var(--text-muted);">Pastikan indikator suara di atas bergerak saat berbicara.</span>
           </div>
         </div>
       </div>
@@ -562,7 +562,7 @@
         <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px;">
           <div>
             <h1 id="exam-session-title" class="page-heading">Session 01 — Reading & Speaking</h1>
-            <p id="exam-session-desc" class="page-desc">Santri membaca teks di bawah ini ke mikrofon kondensor dengan jelas.</p>
+            <p id="exam-session-desc" class="page-desc">Santri membaca teks di bawah ini ke mic dengan jelas.</p>
           </div>
           <div class="blind-banner">
             <span>🛡️ Blind Mode Aktif — Nilai Disembunyikan dari Layar</span>
@@ -579,10 +579,10 @@
                 <div id="s1-passage-meta" style="font-size:12px; color:var(--text-muted);">Kelas 7 • Judul Cerita</div>
               </div>
             </div>
-            <span id="s1-rec-status" style="font-size:12px; font-weight:600; color:#6B7280;">Siap Merekam</span>
+            <span id="s1-rec-status" style="font-size:12px; font-weight:600; color:#6B7280;">Ready to Record</span>
           </div>
 
-          <div id="s1-passage-text" class="reading-passage">Memuat teks bacaan...</div>
+          <div id="s1-passage-text" class="reading-passage">Loading...</div>
 
           <div class="audio-control-bar">
             <button id="btn-rec-s1" class="btn btn-record" onclick="toggleRecording('s1')">
@@ -624,7 +624,7 @@
           </div>
 
           <div class="form-group">
-            <label>KETIK KALIMAT YANG DIDENGAR (AUTOCORRECT & SPELLCHECK DINONAKTIFKAN)</label>
+            <label>KETIK KALIMAT YANG DIDENGAR (AUTO-CORRECT & SPELL-CHECK DINONAKTIFKAN)</label>
             <textarea id="s2-answer-input" rows="3" placeholder="Santri mengetik kalimat bahasa Inggris di sini..."
               autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
               oninput="saveCurrentDictationDraft()"></textarea>
@@ -648,13 +648,13 @@
 
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:16px;">
             <div style="padding:14px; border:1px solid #D1E7DF; border-radius:8px; background:#F8FAFC;">
-              <div style="font-size:11px; font-weight:700; color:var(--primary); margin-bottom:6px;">PERTANYAAN AUDIO 1</div>
+              <div style="font-size:11px; font-weight:700; color:var(--primary); margin-bottom:6px;">PERTANYAAN 1</div>
               <div id="s3-q1-text" style="font-size:14px; font-weight:500; margin-bottom:10px;">-</div>
               <button class="btn btn-outline" style="padding:6px 12px; font-size:12px;" onclick="speakText(currentConvQ1(), 0.95)">🔊 Putar Pertanyaan 1</button>
             </div>
 
             <div style="padding:14px; border:1px solid #D1E7DF; border-radius:8px; background:#F8FAFC;">
-              <div style="font-size:11px; font-weight:700; color:var(--primary); margin-bottom:6px;">PERTANYAAN AUDIO 2</div>
+              <div style="font-size:11px; font-weight:700; color:var(--primary); margin-bottom:6px;">PERTANYAAN 2</div>
               <div id="s3-q2-text" style="font-size:14px; font-weight:500; margin-bottom:10px;">-</div>
               <button class="btn btn-outline" style="padding:6px 12px; font-size:12px;" onclick="speakText(currentConvQ2(), 0.95)">🔊 Putar Pertanyaan 2</button>
             </div>
@@ -671,7 +671,7 @@
             </button>
             <div id="s3-live-vu" class="vu-meter-box"></div>
             <div style="flex:1; min-width:210px;">
-              <label>PENILAIAN SPONTAN PENGUJI (KELIPATAN 5, MAKS 40)</label>
+              <label>PENILAIAN SPONTAN PENGUJI</label>
               <select id="s3-manual-score" onchange="saveCurrentConvDraft()">
                 <option value="40">40 — Sangat Lancar, Spontan & Tepat</option>
                 <option value="35" selected>35 — Lancar & Komunikatif</option>
