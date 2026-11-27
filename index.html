@@ -359,6 +359,19 @@
       margin-bottom: 18px;
     }
 
+    .q-step-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 99px;
+      font-size: 12px;
+      font-weight: 700;
+      background: #ECFDF5;
+      color: var(--primary);
+      border: 1px solid #A7F3D0;
+    }
+
     table { width: 100%; border-collapse: collapse; font-size: 13px; }
     th {
       background: #F4F9F7;
@@ -435,7 +448,7 @@
         <div class="step-circle">02</div>
         <div>
           <div class="step-info-title">Listening & Writing</div>
-          <div class="step-info-sub">Dikte Audio</div>
+          <div class="step-info-sub">Dikte 2 Kalimat</div>
         </div>
       </div>
 
@@ -481,8 +494,8 @@
 
         <div style="padding: 12px; background: #FFFFFF; border-radius: 8px; border: 1px solid #D1E7DF; font-size: 11px; color: #4B5563;">
           <strong>Bobot Nilai (Kelipatan 5):</strong><br>
-          • MTs: R&S (50) + L&W (50)<br>
-          • MA: R&S (30) + L&W (30) + Conv (40)
+          • MTs: R&S (50) + L&W (25×2)<br>
+          • MA: R&S (30) + L&W (15×2) + Conv (40)
         </div>
       </div>
     </div>
@@ -628,36 +641,39 @@
           </div>
         </div>
 
-        <!-- SESSION 2: LISTENING & WRITING (DICTATION) -->
+        <!-- SESSION 2: LISTENING & WRITING (STEP-BY-STEP: PERTANYAAN 1 -> PERTANYAAN 2) -->
         <div id="panel-s2" class="section-card hidden">
-          <div class="card-header-row">
-            <div class="card-num-box" id="s2-badge">02</div>
-            <div>
-              <div id="s2-student-name" style="font-weight:700; font-size:16px;">Nama Santri</div>
-              <div id="s2-meta" style="font-size:12px; color:var(--text-muted);">Sesi Dikte — Audio maksimal diputar 2 kali</div>
+          <div class="card-header-row" style="justify-content:space-between; flex-wrap:wrap;">
+            <div style="display:flex; align-items:center; gap:12px;">
+              <div class="card-num-box" id="s2-badge">02</div>
+              <div>
+                <div id="s2-student-name" style="font-weight:700; font-size:16px;">Nama Santri</div>
+                <div id="s2-meta" style="font-size:12px; color:var(--text-muted);">Pertanyaan 1 dari 2 • Audio maksimal diputar 2 kali</div>
+              </div>
             </div>
+            <span id="s2-step-badge" class="q-step-pill">Pertanyaan 1 / 2</span>
           </div>
 
           <div class="audio-control-bar">
             <button id="btn-play-tts" class="btn btn-primary" onclick="playDictationAudio()">
-              <span>🔊 Putar Audio Kalimat (Sisa: 2x)</span>
+              <span>🔊 Putar Audio Pertanyaan 1 (Sisa: 2x)</span>
             </button>
-            <div style="font-size:12px; color:#374151;">
+            <div id="s2-speed-note" style="font-size:12px; color:#374151;">
               Kecepatan suara otomatis menyesuaikan jenjang (<strong>Tsanawiyah 0.85x</strong> | <strong>Aliyah 1.0x</strong>).<br>
               Teks soal disembunyikan agar santri fokus menyimak.
             </div>
           </div>
 
           <div class="form-group">
-            <label>KETIK KALIMAT YANG DIDENGAR (AUTO-CORRECT & SPELL-CHECK DINONAKTIFKAN)</label>
+            <label id="s2-input-label">KETIK KALIMAT PERTANYAAN 1 YANG DIDENGAR</label>
             <textarea id="s2-answer-input" rows="3" placeholder="Santri mengetik kalimat bahasa Inggris di sini..."
               autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
               oninput="saveCurrentDictationDraft()"></textarea>
           </div>
 
           <div style="display:flex; justify-content:space-between; margin-top:20px;">
-            <button class="btn btn-outline" onclick="prevStudentInSession()">&larr; Santri Sebelumnya</button>
-            <button class="btn btn-primary" onclick="nextStudentOrSession(2)">Simpan & Lanjut &rarr;</button>
+            <button id="btn-s2-prev" class="btn btn-outline" onclick="prevStepInDictation()">&larr; Sebelumnya</button>
+            <button id="btn-s2-next" class="btn btn-primary" onclick="nextStepInDictation()">Lanjut ke Pertanyaan 2 &rarr;</button>
           </div>
         </div>
 
@@ -803,12 +819,13 @@
 
 <script>
   const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbyHsEPTClMm9nNAQdpKZ_WLUlv8FfAV6gmrkcaHmGaLj9NojLsmo2NCLh_8zsn_jfIh0A/exec';
-  const BACKUP_STORAGE_KEY = 'ea_pmd_2627_backup_v1';
+  const BACKUP_STORAGE_KEY = 'ea_pmd_2627_backup_v3';
 
   let DB = { santri: [], bankReading: [], bankDictation: [], bankConversation: [], hasilUjian: [] };
   let BATCH = [];
   let currentSession = 1;
   let currentStudentIdx = 0;
+  let currentDictationStep = 1; // 1 = Pertanyaan 1, 2 = Pertanyaan 2
   let evaluatedResults = [];
   let isExaminerUnlocked = false;
   let activeExaminerPin = '';
@@ -846,6 +863,7 @@
         batch: BATCH,
         currentSession: currentSession,
         currentStudentIdx: currentStudentIdx,
+        currentDictationStep: currentDictationStep,
         evaluatedResults: evaluatedResults
       };
       localStorage.setItem(BACKUP_STORAGE_KEY, JSON.stringify(payload));
@@ -857,6 +875,7 @@
           batch: lightBatch,
           currentSession: currentSession,
           currentStudentIdx: currentStudentIdx,
+          currentDictationStep: currentDictationStep,
           evaluatedResults: evaluatedResults
         }));
       } catch (e2) {}
@@ -888,6 +907,7 @@
       BATCH = saved.batch || [];
       currentSession = saved.currentSession || 1;
       currentStudentIdx = saved.currentStudentIdx || 0;
+      currentDictationStep = saved.currentDictationStep || 1;
       evaluatedResults = saved.evaluatedResults || [];
       document.getElementById('recovery-banner').classList.add('hidden');
       renderStudentDropdowns();
@@ -1240,15 +1260,19 @@
       const isAliyah = sObj.Jenjang === 'Aliyah';
       const targetJenjang = isAliyah ? 'Aliyah' : 'Tsanawiyah';
 
-      // Reading: Acak dari seluruh bank soal jenjang terkait (Tsanawiyah 7-9 / Aliyah 10-12)
+      // Reading: Acak dari seluruh bank soal jenjang terkait
       const rPool = DB.bankReading.filter(r => getJenjangByKelas(r.Kelas) === targetJenjang && !usedReadingIds.has(r.ID_Soal));
       const rPick = rPool.length ? rPool[Math.floor(Math.random() * rPool.length)] : DB.bankReading[0];
       if (rPick) usedReadingIds.add(rPick.ID_Soal);
 
-      // Dictation: Acak spesifik per angka kelas (sesuai aturan jumlah kata per kelas)
-      const dPool = DB.bankDictation.filter(d => String(d.Kelas).trim() === kelasStr && !usedDictationIds.has(d.ID_Soal));
-      const dPick = dPool.length ? dPool[Math.floor(Math.random() * dPool.length)] : DB.bankDictation[0];
-      if (dPick) usedDictationIds.add(dPick.ID_Soal);
+      // Dictation: Pilih 2 soal berbeda spesifik per angka kelas
+      const dPool1 = DB.bankDictation.filter(d => String(d.Kelas).trim() === kelasStr && !usedDictationIds.has(d.ID_Soal));
+      const dPick1 = dPool1.length ? dPool1[Math.floor(Math.random() * dPool1.length)] : DB.bankDictation[0];
+      if (dPick1) usedDictationIds.add(dPick1.ID_Soal);
+
+      const dPool2 = DB.bankDictation.filter(d => String(d.Kelas).trim() === kelasStr && !usedDictationIds.has(d.ID_Soal));
+      const dPick2 = dPool2.length ? dPool2[Math.floor(Math.random() * dPool2.length)] : (DB.bankDictation[1] || DB.bankDictation[0]);
+      if (dPick2) usedDictationIds.add(dPick2.ID_Soal);
 
       // Conversation (Khusus Aliyah): Acak dari seluruh kartu diskusi Aliyah
       let cPick = null;
@@ -1265,9 +1289,12 @@
         readingSoal: rPick,
         readingTranscript: '',
         readingAudioBase64: '',
-        dictationSoal: dPick,
-        dictationPlayCount: 0,
-        dictationAnswer: '',
+        dictationSoal1: dPick1,
+        dictationPlayCount1: 0,
+        dictationAnswer1: '',
+        dictationSoal2: dPick2,
+        dictationPlayCount2: 0,
+        dictationAnswer2: '',
         convSoal: cPick,
         convTranscript: '',
         convAudioBase64: '',
@@ -1283,6 +1310,7 @@
 
     currentSession = 1;
     currentStudentIdx = 0;
+    currentDictationStep = 1;
     saveBackupState();
     switchView('exam');
     renderExamScreen();
@@ -1323,6 +1351,7 @@
     stopRecordingIfActive();
 
     currentSession = sessNum;
+    currentDictationStep = 1;
     if (sessNum === 3) {
       const firstAliyah = BATCH.findIndex(b => b.jenjang === 'Aliyah');
       currentStudentIdx = firstAliyah !== -1 ? firstAliyah : 0;
@@ -1345,13 +1374,18 @@
       const badgeClass = s.jenjang === 'Aliyah' ? 'aliyah' : 'mts';
       const item = document.createElement('div');
       item.className = `nav-item ${isActive ? 'active' : ''}`;
-      item.onclick = () => { stopRecordingIfActive(); currentStudentIdx = idx; renderExamScreen(); };
+      item.onclick = () => {
+        stopRecordingIfActive();
+        currentStudentIdx = idx;
+        currentDictationStep = 1;
+        renderExamScreen();
+      };
       item.innerHTML = `
         <div class="nav-item-left">
           <div class="status-dot"></div>
           <div>
             <div class="nav-name">${s.nama}</div>
-            <div class="nav-meta">Kelas ${s.kelas}</div>
+            <div class="nav-meta">Kelas ${s.kelas}${currentSession === 2 && isActive ? ` • Soal ${currentDictationStep}/2` : ''}</div>
           </div>
         </div>
         <span class="pill-badge ${badgeClass}">${s.jenjang === 'Aliyah' ? 'MA' : 'MTs'}</span>
@@ -1382,16 +1416,44 @@
 
     } else if (currentSession === 2) {
       document.getElementById('exam-session-title').innerText = 'Session 02 — Listening & Writing (Dictation)';
-      document.getElementById('exam-session-desc').innerText = 'Putar audio maksimal 2x lewat speaker, lalu santri mengetik ulang kalimat tersebut.';
+      document.getElementById('exam-session-desc').innerText = 'Kerjakan Pertanyaan 1 terlebih dahulu, lalu lanjut ke Pertanyaan 2.';
       document.getElementById('panel-s2').classList.remove('hidden');
+
+      const isQ1 = currentDictationStep === 1;
+      const activeSoal = isQ1 ? s.dictationSoal1 : s.dictationSoal2;
+      const playCount = isQ1 ? (s.dictationPlayCount1 || 0) : (s.dictationPlayCount2 || 0);
+      const savedAns = isQ1 ? (s.dictationAnswer1 || '') : (s.dictationAnswer2 || '');
+      const sisa = Math.max(0, 2 - playCount);
+      const speedLabel = s.jenjang === 'Tsanawiyah' ? '0.85x (Tsanawiyah)' : '1.0x (Aliyah)';
 
       document.getElementById('s2-badge').innerText = `0${currentStudentIdx + 1}`;
       document.getElementById('s2-student-name').innerText = `${s.nama} (Kelas ${s.kelas} — ${s.jenjang})`;
-      const sisa = Math.max(0, 2 - s.dictationPlayCount);
+      document.getElementById('s2-meta').innerText = `Pertanyaan ${currentDictationStep} dari 2 • Kode: ${activeSoal.ID_Soal} • Kecepatan: ${speedLabel}`;
+      document.getElementById('s2-step-badge').innerText = `Pertanyaan ${currentDictationStep} / 2`;
+
       const btnTts = document.getElementById('btn-play-tts');
-      btnTts.innerHTML = `<span>🔊 Putar Audio Kalimat (Sisa: ${sisa}x)</span>`;
+      btnTts.innerHTML = `<span>🔊 Putar Audio Pertanyaan ${currentDictationStep} (Sisa: ${sisa}x)</span>`;
       btnTts.disabled = sisa === 0;
-      document.getElementById('s2-answer-input').value = s.dictationAnswer || '';
+
+      document.getElementById('s2-input-label').innerText = `KETIK KALIMAT PERTANYAAN ${currentDictationStep} YANG DIDENGAR`;
+      const inputEl = document.getElementById('s2-answer-input');
+      inputEl.value = savedAns;
+      inputEl.placeholder = `Ketik kalimat pertanyaan ${currentDictationStep} di sini...`;
+
+      // Atur label tombol navigasi tahap demi tahap
+      const btnPrev = document.getElementById('btn-s2-prev');
+      const btnNext = document.getElementById('btn-s2-next');
+
+      if (isQ1) {
+        btnPrev.innerHTML = '&larr; Santri Sebelumnya';
+        btnNext.innerHTML = 'Lanjut ke Pertanyaan 2 &rarr;';
+      } else {
+        btnPrev.innerHTML = '&larr; Kembali ke Pertanyaan 1';
+        const hasNextStudent = currentStudentIdx + 1 < BATCH.length;
+        btnNext.innerHTML = hasNextStudent
+          ? 'Simpan & Santri Berikutnya &rarr;'
+          : 'Simpan & Lanjut Sesi &rarr;';
+      }
 
     } else if (currentSession === 3) {
       document.getElementById('exam-session-title').innerText = 'Session 03 — Conversation (Khusus Aliyah)';
@@ -1409,9 +1471,15 @@
   }
 
   function saveCurrentDictationDraft() {
-    BATCH[currentStudentIdx].dictationAnswer = document.getElementById('s2-answer-input').value;
+    const val = document.getElementById('s2-answer-input').value;
+    if (currentDictationStep === 1) {
+      BATCH[currentStudentIdx].dictationAnswer1 = val;
+    } else {
+      BATCH[currentStudentIdx].dictationAnswer2 = val;
+    }
     saveBackupState();
   }
+
   function saveCurrentConvDraft() {
     BATCH[currentStudentIdx].convManualBoost = parseInt(document.getElementById('s3-manual-score').value, 10);
     saveBackupState();
@@ -1428,14 +1496,65 @@
 
   function playDictationAudio() {
     const s = BATCH[currentStudentIdx];
-    if (s.dictationPlayCount >= 2) return;
-    s.dictationPlayCount++;
-    saveBackupState();
-    speakText(s.dictationSoal.Kalimat_Asli, s.jenjang === 'Tsanawiyah' ? 0.85 : 1.0);
-    const sisa = Math.max(0, 2 - s.dictationPlayCount);
-    const btn = document.getElementById('btn-play-tts');
-    btn.innerHTML = `<span>🔊 Putar Audio Kalimat (Sisa: ${sisa}x)</span>`;
-    if (sisa === 0) btn.disabled = true;
+    const rate = s.jenjang === 'Tsanawiyah' ? 0.85 : 1.0;
+
+    if (currentDictationStep === 1) {
+      if ((s.dictationPlayCount1 || 0) >= 2) return;
+      s.dictationPlayCount1 = (s.dictationPlayCount1 || 0) + 1;
+      saveBackupState();
+      speakText(s.dictationSoal1.Kalimat_Asli, rate);
+      const sisa = Math.max(0, 2 - s.dictationPlayCount1);
+      const btn = document.getElementById('btn-play-tts');
+      btn.innerHTML = `<span>🔊 Putar Audio Pertanyaan 1 (Sisa: ${sisa}x)</span>`;
+      if (sisa === 0) btn.disabled = true;
+    } else {
+      if ((s.dictationPlayCount2 || 0) >= 2) return;
+      s.dictationPlayCount2 = (s.dictationPlayCount2 || 0) + 1;
+      saveBackupState();
+      speakText(s.dictationSoal2.Kalimat_Asli, rate);
+      const sisa = Math.max(0, 2 - s.dictationPlayCount2);
+      const btn = document.getElementById('btn-play-tts');
+      btn.innerHTML = `<span>🔊 Putar Audio Pertanyaan 2 (Sisa: ${sisa}x)</span>`;
+      if (sisa === 0) btn.disabled = true;
+    }
+  }
+
+  function prevStepInDictation() {
+    saveCurrentDictationDraft();
+    window.speechSynthesis.cancel();
+    if (currentDictationStep === 2) {
+      currentDictationStep = 1;
+      saveBackupState();
+      renderExamScreen();
+    } else if (currentStudentIdx > 0) {
+      currentStudentIdx--;
+      currentDictationStep = 2; // kembali ke pertanyaan terakhir santri sebelumnya
+      saveBackupState();
+      renderExamScreen();
+    }
+  }
+
+  function nextStepInDictation() {
+    saveCurrentDictationDraft();
+    window.speechSynthesis.cancel();
+
+    if (currentDictationStep === 1) {
+      // Lanjut ke Pertanyaan 2 untuk santri yang sama
+      currentDictationStep = 2;
+      saveBackupState();
+      renderExamScreen();
+    } else {
+      // Pertanyaan 2 selesai -> lanjut ke santri berikutnya atau sesi selanjutnya
+      if (currentStudentIdx + 1 < BATCH.length) {
+        currentStudentIdx++;
+        currentDictationStep = 1;
+        saveBackupState();
+        renderExamScreen();
+      } else {
+        if (BATCH.some(b => b.jenjang === 'Aliyah')) switchSession(3);
+        else processAllBatchEvaluations();
+      }
+    }
   }
 
   function currentConvQ1() { return BATCH[currentStudentIdx].convSoal.Pertanyaan_1; }
@@ -1455,20 +1574,15 @@
 
   function nextStudentOrSession(sessNum) {
     stopRecordingIfActive();
-    if (sessNum === 2) saveCurrentDictationDraft();
     if (sessNum === 3) saveCurrentConvDraft();
     saveBackupState();
 
-    if (sessNum === 1 || sessNum === 2) {
+    if (sessNum === 1) {
       if (currentStudentIdx + 1 < BATCH.length) {
         currentStudentIdx++;
         renderExamScreen();
       } else {
-        if (sessNum === 1) switchSession(2);
-        else if (sessNum === 2) {
-          if (BATCH.some(b => b.jenjang === 'Aliyah')) switchSession(3);
-          else processAllBatchEvaluations();
-        }
+        switchSession(2);
       }
     } else if (sessNum === 3) {
       for (let i = currentStudentIdx + 1; i < BATCH.length; i++) {
@@ -1493,8 +1607,10 @@
         readingTarget: b.readingSoal.Teks_Bacaan,
         readingTranscript: b.readingTranscript,
         readingAudioBase64: b.readingAudioBase64,
-        dictationTarget: b.dictationSoal.Kalimat_Asli,
-        dictationAnswer: b.dictationAnswer,
+        dictationTarget1: b.dictationSoal1.Kalimat_Asli,
+        dictationAnswer1: b.dictationAnswer1,
+        dictationTarget2: b.dictationSoal2.Kalimat_Asli,
+        dictationAnswer2: b.dictationAnswer2,
         convTema: b.convSoal ? b.convSoal.Tema : '',
         convQ1: b.convSoal ? b.convSoal.Pertanyaan_1 : '',
         convQ2: b.convSoal ? b.convSoal.Pertanyaan_2 : '',
